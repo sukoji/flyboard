@@ -27,7 +27,7 @@ def main():
     for chart, g in songs.groupby("chart"):
         ax.scatter(bass(g), g.fly_score, s=46, color=CHARTS[chart]["color"], edgecolor="none", alpha=0.9, zorder=3,
                    label={"global": "Hot 30", "japan": "Japan", "korea": "Korea"}[chart])
-        ax.errorbar(bass(g), g.fly_score, yerr=g.ci95, fmt="none", ecolor=CHARTS[chart]["color"], alpha=0.35, zorder=2)
+        ax.errorbar(bass(g), g.fly_score, yerr=g.mad, fmt="none", ecolor=CHARTS[chart]["color"], alpha=0.35, zorder=2)
     label = set(songs.fly_score.nlargest(4).index) | set(songs.fly_score.nsmallest(2).index)
     for sid in label:
         r = songs.loc[sid]

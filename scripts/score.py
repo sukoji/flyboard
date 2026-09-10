@@ -2,10 +2,12 @@
 
 sim(song)   cosine similarity between the brain-wide response to the song (log1p firing rate of every
             neuron except the ear's own JO neurons) and the REFERENCE response.
-REFERENCE   mean log1p response to fly courtship song over all main sessions. One 30 s listen can
-            contain a random burst of self-sustained activity; averaging listens removes that.
+REFERENCE   per-neuron MEDIAN log1p response to fly courtship song over all main sessions. The model
+            now and then falls into a random self-sustained state for part of a listen (see
+            scripts/probes/probe_ignition.py); a median over listens ignores it, a mean does not.
 FLY SCORE   100 * (sim(song) - sim(white noise)) / (1 - sim(white noise))      per session
-            0 = white noise, 100 = the reference response. Final = mean over sessions, 95% t-CI.
+            0 = white noise, 100 = the reference response. Final = MEDIAN over sessions,
+            spread = median absolute deviation (MAD) over sessions.
 Robustness  Spearman rank correlation between sessions, and with runs under different model settings.
 """
 import json
@@ -42,14 +44,14 @@ def main():
     mask = brain_mask()
     main_tags = [t for t in MAIN if (RUNS / f"{t}_rates.npz").exists()]
     refs = [np.log1p(np.load(RUNS / f"{t}_rates.npz")["ref_hz"].astype(np.float32)[mask]) for t in main_tags]
-    ref_vec = np.mean(refs, 0)
+    ref_vec = np.median(refs, 0)
     S = pd.DataFrame({t: session_scores(t, ref_vec, mask) for t in main_tags})
     n = S.shape[1]
 
     meta = pd.read_csv(RUNS / f"{main_tags[0]}.csv", index_col="id")
     df = meta[["chart", "artist", "title"]].copy()
-    df["fly_score"] = S.mean(1)
-    df["ci95"] = stats.t.ppf(0.975, n - 1) * S.std(1, ddof=1) / np.sqrt(n)
+    df["fly_score"] = S.median(1)
+    df["mad"] = S.sub(S.median(1), axis=0).abs().median(1)
     for col in ["neurons_lit", "heart_aPN1_hz", "panic_GF_hz", "jo_A_hz", "jo_B_hz"]:
         df[col] = pd.DataFrame({t: pd.read_csv(RUNS / f"{t}.csv", index_col="id")[col] for t in main_tags}).mean(1)
     for t in S:
@@ -63,7 +65,7 @@ def main():
     out.to_csv(ROOT / "results" / "scores.csv", encoding="utf-8")
 
     sidx = songs.index
-    rob = {"sessions": n, "reference_listens": len(refs), "median_ci95": round(float(songs.ci95.median()), 2),
+    rob = {"sessions": n, "reference_listens": len(refs), "median_mad": round(float(songs.mad.median()), 2),
            "score_range": [round(float(songs.fly_score.min()), 1), round(float(songs.fly_score.max()), 1)],
            "controls": {k: round(float(df.loc[k, "fly_score"]), 1) for k in df[df.chart == "control"].index},
            "variants": {}}
@@ -82,7 +84,7 @@ def main():
     print(json.dumps(rob, indent=2))
     for chart, g in songs.groupby("chart"):
         print(f"\n== {chart}")
-        print(g.sort_values("fly_score", ascending=False).head(5)[["artist", "title", "fly_score", "ci95"]].to_string())
+        print(g.sort_values("fly_score", ascending=False).head(5)[["artist", "title", "fly_score", "mad"]].to_string())
 
 
 if __name__ == "__main__":

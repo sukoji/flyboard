@@ -106,21 +106,21 @@ def chart_page(key, rows, ref, stats, cover_rel, chart_tag=False):
         podium.append(f"""
       <div class="card {'first' if i == 0 else ''}"><img src="{cover_rel}/{r.Index}.png"><div class="rk">{r.rank}</div>
         <div class="body"><div class="t">{esc(r.title)}</div><div class="a">{esc(r.artist)}{' · ' + CHARTS[r.chart]['name'] if chart_tag else ''}</div>
-        <div class="row"><div class="sc">{r.fly_score:.1f}</div><div class="ci">± {r.ci95:.1f} (95% CI)</div></div>
+        <div class="row"><div class="sc">{r.fly_score:.1f}</div><div class="ci">± {r.mad:.1f} spread over {stats['sessions']} listens</div></div>
         <div class="tags">{tags(r, stats['hot_cut'], stats['jump_cut'])}</div></div></div>""")
     items = []
     for r in rows.iloc[3:].itertuples():
         items.append(f"""
       <div class="item"><div class="rk">{r.rank}</div><img src="{cover_rel}/{r.Index}.png">
         <div><div class="t">{esc(r.title)}</div><div class="a">{esc(r.artist)}{' · ' + CHARTS[r.chart]['name'] if chart_tag else ''}</div></div>
-        <div><div class="bar"><i style="width:{width(r.fly_score):.1f}%"></i><b style="left:{width(r.fly_score - r.ci95):.1f}%;width:{width(r.fly_score + r.ci95) - width(r.fly_score - r.ci95):.1f}%"></b></div>
+        <div><div class="bar"><i style="width:{width(r.fly_score):.1f}%"></i><b style="left:{width(r.fly_score - r.mad):.1f}%;width:{width(r.fly_score + r.mad) - width(r.fly_score - r.mad):.1f}%"></b></div>
           <div class="chip">🧠 {int(r.neurons_lit):,} neurons lit{' · ⚡ jump scare' if r.panic_GF_hz >= stats['jump_cut'] else ''}</div></div>
-        <div class="sc">{r.fly_score:.1f}<small>± {r.ci95:.1f}</small></div></div>""")
+        <div class="sc">{r.fly_score:.1f}<small>± {r.mad:.1f}</small></div></div>""")
     return f"""
   <section class="page" style="--acc:{c['color']}">
     <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div><div class="chartname">{c['name']}</div></div>
     <div class="sub">{c['label']} — ranked by a fruit fly brain</div>
-    <div class="sub2">{stats['n_neurons']:,} simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song {stats['sessions']}×.
+    <div class="sub2">{stats['n_neurons']:,} simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song {stats['sessions']}× (score = median listen).
       FLY SCORE: 0 = white noise, 100 = the brain's exact response to fly love song.</div>
     <div class="ref"><div class="e">🪰</div><div><div class="t">Courtship Song</div><div class="a">another fruit fly · control, not ranked · what a real hit sounds like to this brain</div></div><div class="s">{stats['fly_ref']:.1f}</div></div>
     <div class="podium">{''.join(podium)}</div>
@@ -140,7 +140,7 @@ def hero_page(top1, stats, cover_rel):
       <div class="card" style="--acc:{c['color']}"><img src="{cover_rel}/{r.name}.png"><div class="rk" style="color:{c['color']}">#1</div>
         <div class="chart" style="color:{c['color']}">{c['name']}</div>
         <div class="body"><div class="t">{esc(r.title)}</div><div class="a">{esc(r.artist)}</div>
-        <div class="row"><div class="sc" style="color:{c['color']}">{r.fly_score:.1f}</div><div class="ci">± {r.ci95:.1f}</div></div></div></div>""")
+        <div class="row"><div class="sc" style="color:{c['color']}">{r.fly_score:.1f}</div><div class="ci">± {r.mad:.1f}</div></div></div></div>""")
     return f"""
   <section class="page hero" style="--acc:#c77dff">
     <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div></div>
@@ -174,7 +174,6 @@ def main():
     df = pd.read_csv(ROOT / "results" / "scores.csv", index_col="id")
     rob = json.loads((ROOT / "results" / "robustness.json").read_text())
     songs = df[df.chart != "control"].copy()
-    songs["ci95"] = songs["ci95"].fillna(0)
     bass = songs.jo_B_hz / (songs.jo_A_hz + songs.jo_B_hz)
     stats = {"n_neurons": 165122, "n_songs": len(songs), "sessions": rob["sessions"],
              "fly_ref": float(df.loc["ctrl_flysong", "fly_score"]),

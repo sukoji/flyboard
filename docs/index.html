@@ -1,0 +1,593 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=block');
+:root { --bg:#07080d; --panel:#10131c; --line:#1d2230; --ink:#f4f5f8; --muted:#8b91a4; --acc:#f5c542; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--ink); font-family:Inter,'Noto Sans JP','Noto Sans KR',sans-serif; }
+.page { width:1200px; padding:48px 56px 40px; position:relative; overflow:hidden;
+  background: radial-gradient(900px 500px at 85% -5%, color-mix(in srgb, var(--acc) 22%, transparent), transparent 70%),
+              radial-gradient(700px 500px at -10% 30%, rgba(80,110,255,.10), transparent 70%), var(--bg); }
+.mast { display:flex; align-items:flex-end; gap:22px; }
+.logo { font-family:Anton,Impact,sans-serif; font-size:92px; line-height:.85; letter-spacing:1px; }
+.logo .fly { font-size:70px; margin-right:6px; }
+.chartname { font-family:Anton,Impact,sans-serif; font-size:92px; line-height:.85; color:var(--acc); }
+.sub { margin-top:14px; font-size:17px; color:var(--ink); font-weight:600; }
+.sub2 { margin-top:6px; font-size:13px; color:var(--muted); }
+.ref { margin-top:26px; display:flex; align-items:center; gap:16px; padding:14px 18px; border:1px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  border-radius:14px; background:linear-gradient(90deg, color-mix(in srgb, var(--acc) 12%, transparent), transparent); }
+.ref .e { font-size:30px; } .ref .t { font-weight:800; font-size:17px; } .ref .a { color:var(--muted); font-size:12.5px; margin-top:2px; }
+.ref .s { margin-left:auto; font-family:Anton,Impact,sans-serif; font-size:34px; color:var(--acc); }
+.podium { display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:18px; margin-top:26px; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:18px; overflow:hidden; position:relative; }
+.card img { width:100%; aspect-ratio:1; display:block; object-fit:cover; }
+.card .rk { position:absolute; top:12px; left:16px; font-family:Anton,Impact,sans-serif; font-size:64px; line-height:1;
+  color:#fff; text-shadow:0 4px 24px rgba(0,0,0,.6); }
+.card.first .rk { font-size:88px; color:var(--acc); }
+.card .body { padding:14px 16px 16px; }
+.card .t { font-weight:900; font-size:21px; line-height:1.2; }
+.card.first .t { font-size:25px; }
+.card .a { color:var(--muted); font-size:13.5px; margin-top:4px; }
+.card .row { display:flex; align-items:baseline; justify-content:space-between; margin-top:12px; }
+.card .sc { font-family:Anton,Impact,sans-serif; font-size:40px; color:var(--acc); }
+.card .ci { color:var(--muted); font-size:12px; }
+.tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.tag { font-size:11px; padding:3px 8px; border-radius:99px; background:#1b2030; color:#c9cde0; white-space:nowrap; }
+.tag.hot { background:color-mix(in srgb, var(--acc) 25%, #1b2030); color:#fff; }
+.tag.jump { background:#3a2a07; color:#ffcf5a; }
+.list { margin-top:22px; border-top:1px solid var(--line); }
+.item { display:grid; grid-template-columns:54px 58px 1fr 300px 76px; align-items:center; gap:16px; padding:9px 6px; border-bottom:1px solid var(--line); }
+.item .rk { font-family:Anton,Impact,sans-serif; font-size:28px; text-align:center; color:#dfe2ea; }
+.item img { width:58px; height:58px; border-radius:10px; display:block; }
+.item .t { font-weight:800; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.item .a { color:var(--muted); font-size:12.5px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bar { position:relative; height:10px; background:#1a1f2d; border-radius:99px; }
+.bar i { position:absolute; left:0; top:0; bottom:0; border-radius:99px; background:linear-gradient(90deg, color-mix(in srgb, var(--acc) 45%, #334), var(--acc)); }
+.bar b { position:absolute; top:-4px; bottom:-4px; border-left:1px solid #fff8; border-right:1px solid #fff8; }
+.item .sc { font-family:Anton,Impact,sans-serif; font-size:26px; text-align:right; }
+.item .sc small { display:block; font-family:Inter,sans-serif; font-size:10.5px; color:var(--muted); font-weight:400; }
+.chip { font-size:10.5px; color:var(--muted); margin-top:4px; }
+.foot { margin-top:26px; color:var(--muted); font-size:12px; line-height:1.6; }
+.foot b { color:var(--ink); }
+.hero .trio { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:28px; }
+.hero .card .chart { position:absolute; top:14px; right:14px; font-size:12px; font-weight:800; padding:5px 10px; border-radius:99px;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(6px); }
+.hero .card .rk { font-size:54px; }
+.kpis { display:flex; gap:28px; margin-top:22px; }
+.kpi { font-size:13px; color:var(--muted); } .kpi b { display:block; font-family:Anton,Impact,sans-serif; font-size:34px; color:var(--ink); font-weight:400; }
+
+nav { position:sticky; top:0; z-index:9; display:flex; gap:8px; justify-content:center; padding:14px; background:#07080dcc; backdrop-filter:blur(10px); border-bottom:1px solid #1d2230; }
+nav button { font:800 14px Inter,sans-serif; color:#cfd3e0; background:#141826; border:1px solid #262c3e; padding:9px 16px; border-radius:99px; cursor:pointer; }
+nav button.on { background:#f4f5f8; color:#07080d; }
+.wrap { display:flex; flex-direction:column; align-items:center; }
+video { width:1200px; max-width:100%; border-radius:16px; margin:28px 0 8px; border:1px solid #1d2230; }
+</style></head><body><nav><button onclick="show('all')" id="b-all">ALL-TIME</button><button onclick="show('global')" id="b-global">HOT 30</button><button onclick="show('japan')" id="b-japan">JAPAN</button><button onclick="show('korea')" id="b-korea">KOREA</button></nav><div class="wrap">
+  <section class="page hero" style="--acc:#c77dff">
+    <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div></div>
+    <div class="sub" style="font-size:22px">The music chart voted by a fruit fly brain.</div>
+    <div class="sub2" style="font-size:14px">We played 84 songs to a simulation of an entire male fruit fly nervous system and asked:
+      which one sounds most like love?</div>
+    <div class="kpis"><div class="kpi"><b>165,122</b>neurons</div><div class="kpi"><b>90M</b>synapses</div>
+      <div class="kpi"><b>84</b>songs</div><div class="kpi"><b>4×</b>listening sessions</div>
+      <div class="kpi"><b>0</b>humans consulted</div></div>
+    <div class="trio">
+      <div class="card" style="--acc:#f5c542"><img src="covers/global_00.png"><div class="rk" style="color:#f5c542">#1</div>
+        <div class="chart" style="color:#f5c542">HOT 30</div>
+        <div class="body"><div class="t">Bohemian Rhapsody</div><div class="a">Queen</div>
+        <div class="row"><div class="sc" style="color:#f5c542">23.4</div><div class="ci">± 2.9</div></div></div></div>
+      <div class="card" style="--acc:#ff4d6d"><img src="covers/japan_21.png"><div class="rk" style="color:#ff4d6d">#1</div>
+        <div class="chart" style="color:#ff4d6d">JAPAN</div>
+        <div class="body"><div class="t">プラスティック・ラブ</div><div class="a">竹内まりや</div>
+        <div class="row"><div class="sc" style="color:#ff4d6d">22.1</div><div class="ci">± 3.0</div></div></div></div>
+      <div class="card" style="--acc:#4dabff"><img src="covers/korea_08.png"><div class="rk" style="color:#4dabff">#1</div>
+        <div class="chart" style="color:#4dabff">KOREA</div>
+        <div class="body"><div class="t">Super Shy</div><div class="a">NewJeans</div>
+        <div class="row"><div class="sc" style="color:#4dabff">20.9</div><div class="ci">± 0.2</div></div></div></div></div>
+    <div class="foot">Album art: every dot is a real neuron at its real position, lit by how hard it fired for that song. github.com/sukoji/flyboard</div>
+  </section><video src="flyboard_countdown.mp4" controls muted loop playsinline></video><div class="tab" id="t-all" style="display:none">
+  <section class="page" style="--acc:#c77dff">
+    <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div><div class="chartname">ALL-TIME</div></div>
+    <div class="sub">Every chart combined — ranked by a fruit fly brain</div>
+    <div class="sub2">165,122 simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song 4× (score = median listen).
+      FLY SCORE: 0 = white noise, 100 = the brain's exact response to fly love song.</div>
+    <div class="ref"><div class="e">🪰</div><div><div class="t">Courtship Song</div><div class="a">another fruit fly · control, not ranked · what a real hit sounds like to this brain</div></div><div class="s">99.9</div></div>
+    <div class="podium">
+      <div class="card first"><img src="covers/global_00.png"><div class="rk">1</div>
+        <div class="body"><div class="t">Bohemian Rhapsody</div><div class="a">Queen · HOT 30</div>
+        <div class="row"><div class="sc">23.4</div><div class="ci">± 2.9 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 825 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/japan_21.png"><div class="rk">2</div>
+        <div class="body"><div class="t">プラスティック・ラブ</div><div class="a">竹内まりや · JAPAN</div>
+        <div class="row"><div class="sc">22.1</div><div class="ci">± 3.0 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 727 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/global_01.png"><div class="rk">3</div>
+        <div class="body"><div class="t">Billie Jean</div><div class="a">Michael Jackson · HOT 30</div>
+        <div class="row"><div class="sc">21.3</div><div class="ci">± 3.7 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 731 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div></div>
+    <div class="list">
+      <div class="item"><div class="rk">4</div><img src="covers/global_18.png">
+        <div><div class="t">Rolling in the Deep</div><div class="a">Adele · HOT 30</div></div>
+        <div><div class="bar"><i style="width:21.0%"></i><b style="left:21.0%;width:0.1%"></b></div>
+          <div class="chip">🧠 750 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">21.0<small>± 0.0</small></div></div>
+      <div class="item"><div class="rk">5</div><img src="covers/global_22.png">
+        <div><div class="t">bad guy</div><div class="a">Billie Eilish · HOT 30</div></div>
+        <div><div class="bar"><i style="width:20.9%"></i><b style="left:20.8%;width:0.4%"></b></div>
+          <div class="chip">🧠 762 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">20.9<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">6</div><img src="covers/korea_08.png">
+        <div><div class="t">Super Shy</div><div class="a">NewJeans · KOREA</div></div>
+        <div><div class="bar"><i style="width:20.9%"></i><b style="left:20.7%;width:0.4%"></b></div>
+          <div class="chip">🧠 756 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">20.9<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">7</div><img src="covers/korea_25.png">
+        <div><div class="t">I Know</div><div class="a">Seo Taiji and Boys · KOREA</div></div>
+        <div><div class="bar"><i style="width:20.8%"></i><b style="left:19.5%;width:2.6%"></b></div>
+          <div class="chip">🧠 734 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">20.8<small>± 1.3</small></div></div>
+      <div class="item"><div class="rk">8</div><img src="covers/korea_01.png">
+        <div><div class="t">Butter</div><div class="a">BTS · KOREA</div></div>
+        <div><div class="bar"><i style="width:20.6%"></i><b style="left:20.0%;width:1.2%"></b></div>
+          <div class="chip">🧠 767 neurons lit</div></div>
+        <div class="sc">20.6<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">9</div><img src="covers/japan_06.png">
+        <div><div class="t">Subtitle</div><div class="a">Official髭男dism · JAPAN</div></div>
+        <div><div class="bar"><i style="width:20.1%"></i><b style="left:20.0%;width:0.2%"></b></div>
+          <div class="chip">🧠 740 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">20.1<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">10</div><img src="covers/japan_01.png">
+        <div><div class="t">夜に駆ける</div><div class="a">YOASOBI · JAPAN</div></div>
+        <div><div class="bar"><i style="width:20.1%"></i><b style="left:19.9%;width:0.5%"></b></div>
+          <div class="chip">🧠 728 neurons lit</div></div>
+        <div class="sc">20.1<small>± 0.2</small></div></div></div>
+    <div class="foot"><b>How it's scored:</b> the song is turned into input to the fly's ear (Johnston's organ), a spiking model of the
+      whole CNS listens, and we measure how similar the brain-wide response is to its response to real fly love song.
+      Parody chart, not affiliated with Billboard. Connectome © Janelia/Google (CC-BY 4.0). github.com/sukoji/flyboard</div>
+  </section></div><div class="tab" id="t-global" style="display:none">
+  <section class="page" style="--acc:#f5c542">
+    <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div><div class="chartname">HOT 30</div></div>
+    <div class="sub">Songs of the Century — ranked by a fruit fly brain</div>
+    <div class="sub2">165,122 simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song 4× (score = median listen).
+      FLY SCORE: 0 = white noise, 100 = the brain's exact response to fly love song.</div>
+    <div class="ref"><div class="e">🪰</div><div><div class="t">Courtship Song</div><div class="a">another fruit fly · control, not ranked · what a real hit sounds like to this brain</div></div><div class="s">99.9</div></div>
+    <div class="podium">
+      <div class="card first"><img src="covers/global_00.png"><div class="rk">1</div>
+        <div class="body"><div class="t">Bohemian Rhapsody</div><div class="a">Queen</div>
+        <div class="row"><div class="sc">23.4</div><div class="ci">± 2.9 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 825 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/global_01.png"><div class="rk">2</div>
+        <div class="body"><div class="t">Billie Jean</div><div class="a">Michael Jackson</div>
+        <div class="row"><div class="sc">21.3</div><div class="ci">± 3.7 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 731 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/global_18.png"><div class="rk">3</div>
+        <div class="body"><div class="t">Rolling in the Deep</div><div class="a">Adele</div>
+        <div class="row"><div class="sc">21.0</div><div class="ci">± 0.0 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 750 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div></div>
+    <div class="list">
+      <div class="item"><div class="rk">4</div><img src="covers/global_22.png">
+        <div><div class="t">bad guy</div><div class="a">Billie Eilish</div></div>
+        <div><div class="bar"><i style="width:27.3%"></i><b style="left:27.1%;width:0.3%"></b></div>
+          <div class="chip">🧠 762 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">20.9<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">5</div><img src="covers/global_03.png">
+        <div><div class="t">Here Comes the Sun</div><div class="a">The Beatles</div></div>
+        <div><div class="bar"><i style="width:26.4%"></i><b style="left:25.9%;width:1.0%"></b></div>
+          <div class="chip">🧠 716 neurons lit</div></div>
+        <div class="sc">20.0<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">6</div><img src="covers/global_25.png">
+        <div><div class="t">Get Lucky</div><div class="a">Daft Punk</div></div>
+        <div><div class="bar"><i style="width:25.2%"></i><b style="left:25.0%;width:0.4%"></b></div>
+          <div class="chip">🧠 718 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">18.8<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">7</div><img src="covers/global_23.png">
+        <div><div class="t">Blinding Lights</div><div class="a">The Weeknd</div></div>
+        <div><div class="bar"><i style="width:24.4%"></i><b style="left:24.1%;width:0.5%"></b></div>
+          <div class="chip">🧠 724 neurons lit</div></div>
+        <div class="sc">17.8<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">8</div><img src="covers/global_15.png">
+        <div><div class="t">Africa</div><div class="a">Toto</div></div>
+        <div><div class="bar"><i style="width:24.3%"></i><b style="left:24.0%;width:0.7%"></b></div>
+          <div class="chip">🧠 731 neurons lit</div></div>
+        <div class="sc">17.8<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">9</div><img src="covers/global_10.png">
+        <div><div class="t">Hotel California</div><div class="a">Eagles</div></div>
+        <div><div class="bar"><i style="width:24.0%"></i><b style="left:23.7%;width:0.5%"></b></div>
+          <div class="chip">🧠 744 neurons lit</div></div>
+        <div class="sc">17.4<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">10</div><img src="covers/global_13.png">
+        <div><div class="t">Smells Like Teen Spirit</div><div class="a">Nirvana</div></div>
+        <div><div class="bar"><i style="width:23.7%"></i><b style="left:23.4%;width:0.7%"></b></div>
+          <div class="chip">🧠 687 neurons lit</div></div>
+        <div class="sc">17.1<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">11</div><img src="covers/global_26.png">
+        <div><div class="t">As It Was</div><div class="a">Harry Styles</div></div>
+        <div><div class="bar"><i style="width:23.3%"></i><b style="left:23.1%;width:0.4%"></b></div>
+          <div class="chip">🧠 707 neurons lit</div></div>
+        <div class="sc">16.7<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">12</div><img src="covers/global_28.png">
+        <div><div class="t">Flight of the Bumblebee</div><div class="a">Nikolai Rimsky-Korsakov</div></div>
+        <div><div class="bar"><i style="width:22.9%"></i><b style="left:22.4%;width:0.9%"></b></div>
+          <div class="chip">🧠 727 neurons lit</div></div>
+        <div class="sc">16.2<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">13</div><img src="covers/global_19.png">
+        <div><div class="t">Uptown Funk</div><div class="a">Mark Ronson</div></div>
+        <div><div class="bar"><i style="width:22.9%"></i><b style="left:22.5%;width:0.7%"></b></div>
+          <div class="chip">🧠 749 neurons lit</div></div>
+        <div class="sc">16.2<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">14</div><img src="covers/global_21.png">
+        <div><div class="t">Despacito</div><div class="a">Luis Fonsi</div></div>
+        <div><div class="bar"><i style="width:22.9%"></i><b style="left:22.5%;width:0.7%"></b></div>
+          <div class="chip">🧠 729 neurons lit</div></div>
+        <div class="sc">16.2<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">15</div><img src="covers/global_07.png">
+        <div><div class="t">Johnny B. Goode</div><div class="a">Chuck Berry</div></div>
+        <div><div class="bar"><i style="width:22.5%"></i><b style="left:22.3%;width:0.2%"></b></div>
+          <div class="chip">🧠 730 neurons lit</div></div>
+        <div class="sc">15.7<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">16</div><img src="covers/global_12.png">
+        <div><div class="t">Imagine</div><div class="a">John Lennon</div></div>
+        <div><div class="bar"><i style="width:22.4%"></i><b style="left:22.1%;width:0.6%"></b></div>
+          <div class="chip">🧠 739 neurons lit</div></div>
+        <div class="sc">15.7<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">17</div><img src="covers/global_17.png">
+        <div><div class="t">Crazy in Love</div><div class="a">Beyoncé</div></div>
+        <div><div class="bar"><i style="width:22.4%"></i><b style="left:22.1%;width:0.6%"></b></div>
+          <div class="chip">🧠 696 neurons lit</div></div>
+        <div class="sc">15.7<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">18</div><img src="covers/global_11.png">
+        <div><div class="t">Stairway to Heaven</div><div class="a">Led Zeppelin</div></div>
+        <div><div class="bar"><i style="width:22.4%"></i><b style="left:22.2%;width:0.4%"></b></div>
+          <div class="chip">🧠 719 neurons lit</div></div>
+        <div class="sc">15.6<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">19</div><img src="covers/global_27.png">
+        <div><div class="t">Fly Me to the Moon</div><div class="a">Frank Sinatra</div></div>
+        <div><div class="bar"><i style="width:22.2%"></i><b style="left:21.6%;width:1.2%"></b></div>
+          <div class="chip">🧠 701 neurons lit</div></div>
+        <div class="sc">15.5<small>± 0.7</small></div></div>
+      <div class="item"><div class="rk">20</div><img src="covers/global_05.png">
+        <div><div class="t">All I Want for Christmas Is You</div><div class="a">Mariah Carey</div></div>
+        <div><div class="bar"><i style="width:21.3%"></i><b style="left:21.2%;width:0.3%"></b></div>
+          <div class="chip">🧠 702 neurons lit</div></div>
+        <div class="sc">14.5<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">21</div><img src="covers/global_02.png">
+        <div><div class="t">Hey Jude</div><div class="a">The Beatles</div></div>
+        <div><div class="bar"><i style="width:21.2%"></i><b style="left:21.0%;width:0.3%"></b></div>
+          <div class="chip">🧠 702 neurons lit</div></div>
+        <div class="sc">14.4<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">22</div><img src="covers/global_20.png">
+        <div><div class="t">Shape of You</div><div class="a">Ed Sheeran</div></div>
+        <div><div class="bar"><i style="width:21.0%"></i><b style="left:20.9%;width:0.2%"></b></div>
+          <div class="chip">🧠 723 neurons lit</div></div>
+        <div class="sc">14.1<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">23</div><img src="covers/global_08.png">
+        <div><div class="t">Stayin&#x27; Alive</div><div class="a">Bee Gees</div></div>
+        <div><div class="bar"><i style="width:20.8%"></i><b style="left:20.7%;width:0.2%"></b></div>
+          <div class="chip">🧠 728 neurons lit</div></div>
+        <div class="sc">13.9<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">24</div><img src="covers/global_16.png">
+        <div><div class="t">Never Gonna Give You Up</div><div class="a">Rick Astley</div></div>
+        <div><div class="bar"><i style="width:19.8%"></i><b style="left:19.7%;width:0.3%"></b></div>
+          <div class="chip">🧠 729 neurons lit</div></div>
+        <div class="sc">12.9<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">25</div><img src="covers/global_06.png">
+        <div><div class="t">Hound Dog</div><div class="a">Elvis Presley</div></div>
+        <div><div class="bar"><i style="width:19.4%"></i><b style="left:19.0%;width:0.7%"></b></div>
+          <div class="chip">🧠 704 neurons lit</div></div>
+        <div class="sc">12.4<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">26</div><img src="covers/global_24.png">
+        <div><div class="t">Shake It Off</div><div class="a">Taylor Swift</div></div>
+        <div><div class="bar"><i style="width:19.4%"></i><b style="left:19.0%;width:0.7%"></b></div>
+          <div class="chip">🧠 711 neurons lit</div></div>
+        <div class="sc">12.3<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">27</div><img src="covers/global_14.png">
+        <div><div class="t">Take On Me</div><div class="a">a-ha</div></div>
+        <div><div class="bar"><i style="width:19.2%"></i><b style="left:19.1%;width:0.3%"></b></div>
+          <div class="chip">🧠 682 neurons lit</div></div>
+        <div class="sc">12.2<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">28</div><img src="covers/global_29.png">
+        <div><div class="t">Symphony No. 5 in C Minor</div><div class="a">Vienna Philharmonic</div></div>
+        <div><div class="bar"><i style="width:12.3%"></i><b style="left:12.1%;width:0.6%"></b></div>
+          <div class="chip">🧠 678 neurons lit</div></div>
+        <div class="sc">4.7<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">29</div><img src="covers/global_09.png">
+        <div><div class="t">Dancing Queen</div><div class="a">ABBA</div></div>
+        <div><div class="bar"><i style="width:12.2%"></i><b style="left:11.7%;width:0.9%"></b></div>
+          <div class="chip">🧠 632 neurons lit</div></div>
+        <div class="sc">4.5<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">30</div><img src="covers/global_04.png">
+        <div><div class="t">I Will Always Love You</div><div class="a">Whitney Houston</div></div>
+        <div><div class="bar"><i style="width:4.6%"></i><b style="left:4.0%;width:1.2%"></b></div>
+          <div class="chip">🧠 606 neurons lit</div></div>
+        <div class="sc">-3.7<small>± 0.6</small></div></div></div>
+    <div class="foot"><b>How it's scored:</b> the song is turned into input to the fly's ear (Johnston's organ), a spiking model of the
+      whole CNS listens, and we measure how similar the brain-wide response is to its response to real fly love song.
+      Parody chart, not affiliated with Billboard. Connectome © Janelia/Google (CC-BY 4.0). github.com/sukoji/flyboard</div>
+  </section></div><div class="tab" id="t-japan" style="display:none">
+  <section class="page" style="--acc:#ff4d6d">
+    <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div><div class="chartname">JAPAN</div></div>
+    <div class="sub">J-POP — ranked by a fruit fly brain</div>
+    <div class="sub2">165,122 simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song 4× (score = median listen).
+      FLY SCORE: 0 = white noise, 100 = the brain's exact response to fly love song.</div>
+    <div class="ref"><div class="e">🪰</div><div><div class="t">Courtship Song</div><div class="a">another fruit fly · control, not ranked · what a real hit sounds like to this brain</div></div><div class="s">99.9</div></div>
+    <div class="podium">
+      <div class="card first"><img src="covers/japan_21.png"><div class="rk">1</div>
+        <div class="body"><div class="t">プラスティック・ラブ</div><div class="a">竹内まりや</div>
+        <div class="row"><div class="sc">22.1</div><div class="ci">± 3.0 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 727 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/japan_06.png"><div class="rk">2</div>
+        <div class="body"><div class="t">Subtitle</div><div class="a">Official髭男dism</div>
+        <div class="row"><div class="sc">20.1</div><div class="ci">± 0.1 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 740 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/japan_01.png"><div class="rk">3</div>
+        <div class="body"><div class="t">夜に駆ける</div><div class="a">YOASOBI</div>
+        <div class="row"><div class="sc">20.1</div><div class="ci">± 0.2 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 728 neurons lit</span></div></div></div></div>
+    <div class="list">
+      <div class="item"><div class="rk">4</div><img src="covers/japan_19.png">
+        <div><div class="t">GOAT</div><div class="a">Number_i</div></div>
+        <div><div class="bar"><i style="width:19.8%"></i><b style="left:16.3%;width:7.0%"></b></div>
+          <div class="chip">🧠 726 neurons lit</div></div>
+        <div class="sc">19.8<small>± 3.5</small></div></div>
+      <div class="item"><div class="rk">5</div><img src="covers/japan_25.png">
+        <div><div class="t">恋</div><div class="a">星野源</div></div>
+        <div><div class="bar"><i style="width:19.5%"></i><b style="left:18.9%;width:1.2%"></b></div>
+          <div class="chip">🧠 699 neurons lit</div></div>
+        <div class="sc">19.5<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">6</div><img src="covers/japan_26.png">
+        <div><div class="t">秒針を噛む</div><div class="a">ずっと真夜中でいいのに。</div></div>
+        <div><div class="bar"><i style="width:17.6%"></i><b style="left:16.3%;width:2.7%"></b></div>
+          <div class="chip">🧠 689 neurons lit</div></div>
+        <div class="sc">17.6<small>± 1.4</small></div></div>
+      <div class="item"><div class="rk">7</div><img src="covers/japan_03.png">
+        <div><div class="t">ライラック</div><div class="a">Mrs. GREEN APPLE</div></div>
+        <div><div class="bar"><i style="width:17.5%"></i><b style="left:17.0%;width:0.8%"></b></div>
+          <div class="chip">🧠 682 neurons lit</div></div>
+        <div class="sc">17.5<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">8</div><img src="covers/japan_22.png">
+        <div><div class="t">上を向いて歩こう</div><div class="a">坂本九</div></div>
+        <div><div class="bar"><i style="width:16.7%"></i><b style="left:16.6%;width:0.3%"></b></div>
+          <div class="chip">🧠 716 neurons lit</div></div>
+        <div class="sc">16.7<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">9</div><img src="covers/japan_00.png">
+        <div><div class="t">アイドル</div><div class="a">YOASOBI</div></div>
+        <div><div class="bar"><i style="width:16.2%"></i><b style="left:16.1%;width:0.2%"></b></div>
+          <div class="chip">🧠 732 neurons lit</div></div>
+        <div class="sc">16.2<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">10</div><img src="covers/japan_02.png">
+        <div><div class="t">Bling-Bang-Bang-Born</div><div class="a">Creepy Nuts</div></div>
+        <div><div class="bar"><i style="width:15.8%"></i><b style="left:15.2%;width:1.3%"></b></div>
+          <div class="chip">🧠 722 neurons lit</div></div>
+        <div class="sc">15.8<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">11</div><img src="covers/japan_13.png">
+        <div><div class="t">怪獣の花唄</div><div class="a">Vaundy</div></div>
+        <div><div class="bar"><i style="width:15.5%"></i><b style="left:15.2%;width:0.5%"></b></div>
+          <div class="chip">🧠 661 neurons lit</div></div>
+        <div class="sc">15.5<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">12</div><img src="covers/japan_09.png">
+        <div><div class="t">KICK BACK</div><div class="a">米津玄師</div></div>
+        <div><div class="bar"><i style="width:15.4%"></i><b style="left:15.3%;width:0.3%"></b></div>
+          <div class="chip">🧠 704 neurons lit</div></div>
+        <div class="sc">15.4<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">13</div><img src="covers/japan_04.png">
+        <div><div class="t">ケセラセラ</div><div class="a">Mrs. GREEN APPLE</div></div>
+        <div><div class="bar"><i style="width:14.9%"></i><b style="left:14.8%;width:0.2%"></b></div>
+          <div class="chip">🧠 719 neurons lit</div></div>
+        <div class="sc">14.9<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">14</div><img src="covers/japan_11.png">
+        <div><div class="t">新時代</div><div class="a">Ado</div></div>
+        <div><div class="bar"><i style="width:14.8%"></i><b style="left:14.6%;width:0.4%"></b></div>
+          <div class="chip">🧠 688 neurons lit</div></div>
+        <div class="sc">14.8<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">15</div><img src="covers/japan_24.png">
+        <div><div class="t">高嶺の花子さん</div><div class="a">back number</div></div>
+        <div><div class="bar"><i style="width:14.5%"></i><b style="left:14.2%;width:0.7%"></b></div>
+          <div class="chip">🧠 682 neurons lit</div></div>
+        <div class="sc">14.5<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">16</div><img src="covers/japan_12.png">
+        <div><div class="t">紅蓮華</div><div class="a">LiSA</div></div>
+        <div><div class="bar"><i style="width:14.1%"></i><b style="left:13.2%;width:1.7%"></b></div>
+          <div class="chip">🧠 697 neurons lit</div></div>
+        <div class="sc">14.1<small>± 0.9</small></div></div>
+      <div class="item"><div class="rk">17</div><img src="covers/japan_23.png">
+        <div><div class="t">スターマイン</div><div class="a">Da-iCE</div></div>
+        <div><div class="bar"><i style="width:13.9%"></i><b style="left:13.3%;width:1.2%"></b></div>
+          <div class="chip">🧠 721 neurons lit</div></div>
+        <div class="sc">13.9<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">18</div><img src="covers/japan_18.png">
+        <div><div class="t">晩餐歌</div><div class="a">tuki.</div></div>
+        <div><div class="bar"><i style="width:13.8%"></i><b style="left:13.5%;width:0.7%"></b></div>
+          <div class="chip">🧠 692 neurons lit</div></div>
+        <div class="sc">13.8<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">19</div><img src="covers/japan_14.png">
+        <div><div class="t">死ぬのがいいわ</div><div class="a">藤井 風</div></div>
+        <div><div class="bar"><i style="width:13.4%"></i><b style="left:12.9%;width:0.9%"></b></div>
+          <div class="chip">🧠 694 neurons lit</div></div>
+        <div class="sc">13.4<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">20</div><img src="covers/japan_10.png">
+        <div><div class="t">うっせぇわ</div><div class="a">Ado</div></div>
+        <div><div class="bar"><i style="width:13.3%"></i><b style="left:13.2%;width:0.2%"></b></div>
+          <div class="chip">🧠 694 neurons lit</div></div>
+        <div class="sc">13.3<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">21</div><img src="covers/japan_07.png">
+        <div><div class="t">白日</div><div class="a">King Gnu</div></div>
+        <div><div class="bar"><i style="width:12.6%"></i><b style="left:12.4%;width:0.4%"></b></div>
+          <div class="chip">🧠 685 neurons lit</div></div>
+        <div class="sc">12.6<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">22</div><img src="covers/japan_16.png">
+        <div><div class="t">マリーゴールド</div><div class="a">あいみょん</div></div>
+        <div><div class="bar"><i style="width:12.1%"></i><b style="left:11.6%;width:1.0%"></b></div>
+          <div class="chip">🧠 659 neurons lit</div></div>
+        <div class="sc">12.1<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">23</div><img src="covers/japan_08.png">
+        <div><div class="t">Lemon</div><div class="a">米津玄師</div></div>
+        <div><div class="bar"><i style="width:11.9%"></i><b style="left:11.3%;width:1.3%"></b></div>
+          <div class="chip">🧠 673 neurons lit</div></div>
+        <div class="sc">11.9<small>± 0.7</small></div></div>
+      <div class="item"><div class="rk">24</div><img src="covers/japan_05.png">
+        <div><div class="t">Pretender</div><div class="a">Official髭男dism</div></div>
+        <div><div class="bar"><i style="width:11.5%"></i><b style="left:11.3%;width:0.4%"></b></div>
+          <div class="chip">🧠 691 neurons lit</div></div>
+        <div class="sc">11.5<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">25</div><img src="covers/japan_15.png">
+        <div><div class="t">残響散歌</div><div class="a">Aimer</div></div>
+        <div><div class="bar"><i style="width:10.0%"></i><b style="left:10.0%;width:0.1%"></b></div>
+          <div class="chip">🧠 645 neurons lit</div></div>
+        <div class="sc">10.0<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">26</div><img src="covers/japan_17.png">
+        <div><div class="t">ドライフラワー</div><div class="a">優里</div></div>
+        <div><div class="bar"><i style="width:8.4%"></i><b style="left:8.3%;width:0.2%"></b></div>
+          <div class="chip">🧠 664 neurons lit</div></div>
+        <div class="sc">8.4<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">27</div><img src="covers/japan_20.png">
+        <div><div class="t">First Love</div><div class="a">宇多田ヒカル</div></div>
+        <div><div class="bar"><i style="width:7.8%"></i><b style="left:7.6%;width:0.4%"></b></div>
+          <div class="chip">🧠 687 neurons lit</div></div>
+        <div class="sc">7.8<small>± 0.2</small></div></div></div>
+    <div class="foot"><b>How it's scored:</b> the song is turned into input to the fly's ear (Johnston's organ), a spiking model of the
+      whole CNS listens, and we measure how similar the brain-wide response is to its response to real fly love song.
+      Parody chart, not affiliated with Billboard. Connectome © Janelia/Google (CC-BY 4.0). github.com/sukoji/flyboard</div>
+  </section></div><div class="tab" id="t-korea" style="display:none">
+  <section class="page" style="--acc:#4dabff">
+    <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div><div class="chartname">KOREA</div></div>
+    <div class="sub">K-POP — ranked by a fruit fly brain</div>
+    <div class="sub2">165,122 simulated neurons of a real male fly (MaleCNS v1.0 connectome) listened to every song 4× (score = median listen).
+      FLY SCORE: 0 = white noise, 100 = the brain's exact response to fly love song.</div>
+    <div class="ref"><div class="e">🪰</div><div><div class="t">Courtship Song</div><div class="a">another fruit fly · control, not ranked · what a real hit sounds like to this brain</div></div><div class="s">99.9</div></div>
+    <div class="podium">
+      <div class="card first"><img src="covers/korea_08.png"><div class="rk">1</div>
+        <div class="body"><div class="t">Super Shy</div><div class="a">NewJeans</div>
+        <div class="row"><div class="sc">20.9</div><div class="ci">± 0.2 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 756 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/korea_25.png"><div class="rk">2</div>
+        <div class="body"><div class="t">I Know</div><div class="a">Seo Taiji and Boys</div>
+        <div class="row"><div class="sc">20.8</div><div class="ci">± 1.3 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 734 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span><span class="tag jump">⚡ jump scare</span></div></div></div>
+      <div class="card "><img src="covers/korea_01.png"><div class="rk">3</div>
+        <div class="body"><div class="t">Butter</div><div class="a">BTS</div>
+        <div class="row"><div class="sc">20.6</div><div class="ci">± 0.6 spread over 4 listens</div></div>
+        <div class="tags"><span class="tag">🧠 767 neurons lit</span><span class="tag hot">🔊 bass the fly loves</span></div></div></div></div>
+    <div class="list">
+      <div class="item"><div class="rk">4</div><img src="covers/korea_02.png">
+        <div><div class="t">Gangnam Style</div><div class="a">PSY</div></div>
+        <div><div class="bar"><i style="width:19.6%"></i><b style="left:18.9%;width:1.3%"></b></div>
+          <div class="chip">🧠 769 neurons lit</div></div>
+        <div class="sc">19.6<small>± 0.7</small></div></div>
+      <div class="item"><div class="rk">5</div><img src="covers/korea_18.png">
+        <div><div class="t">Seven</div><div class="a">Jung Kook</div></div>
+        <div><div class="bar"><i style="width:18.9%"></i><b style="left:18.3%;width:1.3%"></b></div>
+          <div class="chip">🧠 735 neurons lit</div></div>
+        <div class="sc">18.9<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">6</div><img src="covers/korea_16.png">
+        <div><div class="t">LOVE DIVE</div><div class="a">IVE</div></div>
+        <div><div class="bar"><i style="width:18.8%"></i><b style="left:18.8%;width:0.1%"></b></div>
+          <div class="chip">🧠 757 neurons lit</div></div>
+        <div class="sc">18.8<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">7</div><img src="covers/korea_26.png">
+        <div><div class="t">서른 즈음에</div><div class="a">Kim Kwang Seok</div></div>
+        <div><div class="bar"><i style="width:18.8%"></i><b style="left:18.3%;width:1.1%"></b></div>
+          <div class="chip">🧠 698 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">18.8<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">8</div><img src="covers/korea_19.png">
+        <div><div class="t">Like Crazy</div><div class="a">Jimin</div></div>
+        <div><div class="bar"><i style="width:18.7%"></i><b style="left:17.6%;width:2.2%"></b></div>
+          <div class="chip">🧠 736 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">18.7<small>± 1.1</small></div></div>
+      <div class="item"><div class="rk">9</div><img src="covers/korea_10.png">
+        <div><div class="t">Through the Night</div><div class="a">IU</div></div>
+        <div><div class="bar"><i style="width:18.3%"></i><b style="left:18.0%;width:0.6%"></b></div>
+          <div class="chip">🧠 747 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">18.3<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">10</div><img src="covers/korea_14.png">
+        <div><div class="t">Gee</div><div class="a">Girls&#x27; Generation</div></div>
+        <div><div class="bar"><i style="width:17.7%"></i><b style="left:17.1%;width:1.3%"></b></div>
+          <div class="chip">🧠 713 neurons lit</div></div>
+        <div class="sc">17.7<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">11</div><img src="covers/korea_00.png">
+        <div><div class="t">Dynamite</div><div class="a">BTS</div></div>
+        <div><div class="bar"><i style="width:17.4%"></i><b style="left:17.3%;width:0.4%"></b></div>
+          <div class="chip">🧠 751 neurons lit · ⚡ jump scare</div></div>
+        <div class="sc">17.4<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">12</div><img src="covers/korea_12.png">
+        <div><div class="t">Lies</div><div class="a">BIGBANG</div></div>
+        <div><div class="bar"><i style="width:17.4%"></i><b style="left:17.2%;width:0.5%"></b></div>
+          <div class="chip">🧠 749 neurons lit</div></div>
+        <div class="sc">17.4<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">13</div><img src="covers/korea_06.png">
+        <div><div class="t">Hype Boy</div><div class="a">NewJeans</div></div>
+        <div><div class="bar"><i style="width:16.5%"></i><b style="left:16.3%;width:0.4%"></b></div>
+          <div class="chip">🧠 750 neurons lit</div></div>
+        <div class="sc">16.5<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">14</div><img src="covers/korea_20.png">
+        <div><div class="t">Golden</div><div class="a">HUNTR/X</div></div>
+        <div><div class="bar"><i style="width:16.1%"></i><b style="left:15.7%;width:0.7%"></b></div>
+          <div class="chip">🧠 732 neurons lit</div></div>
+        <div class="sc">16.1<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">15</div><img src="covers/korea_15.png">
+        <div><div class="t">Supernova</div><div class="a">aespa</div></div>
+        <div><div class="bar"><i style="width:15.8%"></i><b style="left:15.0%;width:1.6%"></b></div>
+          <div class="chip">🧠 707 neurons lit</div></div>
+        <div class="sc">15.8<small>± 0.8</small></div></div>
+      <div class="item"><div class="rk">16</div><img src="covers/korea_11.png">
+        <div><div class="t">Fantastic Baby</div><div class="a">BIGBANG</div></div>
+        <div><div class="bar"><i style="width:15.3%"></i><b style="left:14.7%;width:1.2%"></b></div>
+          <div class="chip">🧠 744 neurons lit</div></div>
+        <div class="sc">15.3<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">17</div><img src="covers/korea_24.png">
+        <div><div class="t">S-Class</div><div class="a">Stray Kids</div></div>
+        <div><div class="bar"><i style="width:15.1%"></i><b style="left:13.4%;width:3.5%"></b></div>
+          <div class="chip">🧠 731 neurons lit</div></div>
+        <div class="sc">15.1<small>± 1.7</small></div></div>
+      <div class="item"><div class="rk">18</div><img src="covers/korea_17.png">
+        <div><div class="t">Queencard</div><div class="a">(G)I-DLE</div></div>
+        <div><div class="bar"><i style="width:15.1%"></i><b style="left:14.8%;width:0.7%"></b></div>
+          <div class="chip">🧠 716 neurons lit</div></div>
+        <div class="sc">15.1<small>± 0.3</small></div></div>
+      <div class="item"><div class="rk">19</div><img src="covers/korea_09.png">
+        <div><div class="t">Good Day</div><div class="a">IU</div></div>
+        <div><div class="bar"><i style="width:14.6%"></i><b style="left:14.2%;width:0.9%"></b></div>
+          <div class="chip">🧠 741 neurons lit</div></div>
+        <div class="sc">14.6<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">20</div><img src="covers/korea_22.png">
+        <div><div class="t">Cherry Blossom Ending</div><div class="a">Busker Busker</div></div>
+        <div><div class="bar"><i style="width:14.6%"></i><b style="left:13.9%;width:1.4%"></b></div>
+          <div class="chip">🧠 689 neurons lit</div></div>
+        <div class="sc">14.6<small>± 0.7</small></div></div>
+      <div class="item"><div class="rk">21</div><img src="covers/korea_21.png">
+        <div><div class="t">Event Horizon</div><div class="a">YOUNHA</div></div>
+        <div><div class="bar"><i style="width:14.1%"></i><b style="left:13.6%;width:1.0%"></b></div>
+          <div class="chip">🧠 681 neurons lit</div></div>
+        <div class="sc">14.1<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">22</div><img src="covers/korea_05.png">
+        <div><div class="t">APT.</div><div class="a">ROSÉ</div></div>
+        <div><div class="bar"><i style="width:13.7%"></i><b style="left:13.6%;width:0.3%"></b></div>
+          <div class="chip">🧠 744 neurons lit</div></div>
+        <div class="sc">13.7<small>± 0.1</small></div></div>
+      <div class="item"><div class="rk">23</div><img src="covers/korea_04.png">
+        <div><div class="t">How You Like That</div><div class="a">BLACKPINK</div></div>
+        <div><div class="bar"><i style="width:13.5%"></i><b style="left:13.1%;width:0.9%"></b></div>
+          <div class="chip">🧠 743 neurons lit</div></div>
+        <div class="sc">13.5<small>± 0.5</small></div></div>
+      <div class="item"><div class="rk">24</div><img src="covers/korea_23.png">
+        <div><div class="t">Super</div><div class="a">SEVENTEEN</div></div>
+        <div><div class="bar"><i style="width:11.6%"></i><b style="left:11.3%;width:0.5%"></b></div>
+          <div class="chip">🧠 711 neurons lit</div></div>
+        <div class="sc">11.6<small>± 0.2</small></div></div>
+      <div class="item"><div class="rk">25</div><img src="covers/korea_07.png">
+        <div><div class="t">Ditto</div><div class="a">NewJeans</div></div>
+        <div><div class="bar"><i style="width:9.8%"></i><b style="left:9.5%;width:0.7%"></b></div>
+          <div class="chip">🧠 685 neurons lit</div></div>
+        <div class="sc">9.8<small>± 0.4</small></div></div>
+      <div class="item"><div class="rk">26</div><img src="covers/korea_03.png">
+        <div><div class="t">DDU-DU DDU-DU</div><div class="a">BLACKPINK</div></div>
+        <div><div class="bar"><i style="width:8.9%"></i><b style="left:8.2%;width:1.3%"></b></div>
+          <div class="chip">🧠 694 neurons lit</div></div>
+        <div class="sc">8.9<small>± 0.6</small></div></div>
+      <div class="item"><div class="rk">27</div><img src="covers/korea_13.png">
+        <div><div class="t">Tell Me</div><div class="a">Wonder Girls</div></div>
+        <div><div class="bar"><i style="width:6.8%"></i><b style="left:6.6%;width:0.4%"></b></div>
+          <div class="chip">🧠 681 neurons lit</div></div>
+        <div class="sc">6.8<small>± 0.2</small></div></div></div>
+    <div class="foot"><b>How it's scored:</b> the song is turned into input to the fly's ear (Johnston's organ), a spiking model of the
+      whole CNS listens, and we measure how similar the brain-wide response is to its response to real fly love song.
+      Parody chart, not affiliated with Billboard. Connectome © Janelia/Google (CC-BY 4.0). github.com/sukoji/flyboard</div>
+  </section></div></div>
+<script>function show(k){document.querySelectorAll('.tab').forEach(e=>e.style.display='none');document.getElementById('t-'+k).style.display='block';
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById('b-'+k).classList.add('on');}show('all');</script></body></html>

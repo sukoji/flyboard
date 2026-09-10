@@ -1,0 +1,27 @@
+{
+  "sessions": 4,
+  "reference_listens": 4,
+  "median_mad": 0.34,
+  "score_range": [
+    -3.7,
+    23.4
+  ],
+  "controls": {
+    "ctrl_flysong": 99.9,
+    "ctrl_noise": 0.0,
+    "ctrl_tone": -18.5,
+    "ctrl_metronome": 83.3
+  },
+  "variants": {
+    "w_syn 0.10 mV (weaker synapses)": {
+      "spearman_rho": 0.888,
+      "top10_overlap": 7
+    },
+    "no ear adaptation": {
+      "spearman_rho": 0.795,
+      "top10_overlap": 5
+    }
+  },
+  "between_sessions_spearman_rho": 0.87,
+  "corr_score_vs_bass_share": 0.856
+}

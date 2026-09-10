@@ -1,0 +1,85 @@
+id,chart,artist,title,year,country,found,itunes_artist,itunes_track,itunes_url,audio
+global_00,global,Queen,Bohemian Rhapsody,1975,US,True,Queen,Bohemian Rhapsody,https://music.apple.com/us/album/bohemian-rhapsody/1440650428?i=1440650711&uo=4,audio\global\00.m4a
+global_01,global,Michael Jackson,Billie Jean,1982,US,True,Michael Jackson,Billie Jean,https://music.apple.com/us/album/billie-jean/269572838?i=269573364&uo=4,audio\global\01.m4a
+global_02,global,The Beatles,Hey Jude,1968,US,True,The Beatles,Hey Jude,https://music.apple.com/us/album/hey-jude/1441133100?i=1441133277&uo=4,audio\global\02.m4a
+global_03,global,The Beatles,Here Comes the Sun,1969,US,True,The Beatles,Here Comes the Sun,https://music.apple.com/us/album/here-comes-the-sun/1441164426?i=1441164589&uo=4,audio\global\03.m4a
+global_04,global,Whitney Houston,I Will Always Love You,1992,US,True,Whitney Houston,I Will Always Love You,https://music.apple.com/us/album/i-will-always-love-you/388151892?i=388151901&uo=4,audio\global\04.m4a
+global_05,global,Mariah Carey,All I Want for Christmas Is You,1994,US,True,Mariah Carey,All I Want for Christmas Is You,https://music.apple.com/us/album/all-i-want-for-christmas-is-you/585972750?i=585972803&uo=4,audio\global\05.m4a
+global_06,global,Elvis Presley,Hound Dog,1956,US,True,Elvis Presley,Hound Dog,https://music.apple.com/us/album/hound-dog/388127843?i=388127880&uo=4,audio\global\06.m4a
+global_07,global,Chuck Berry,Johnny B. Goode,1958,US,True,Chuck Berry,Johnny B. Goode,https://music.apple.com/us/album/johnny-b-goode/1452975975?i=1452976390&uo=4,audio\global\07.m4a
+global_08,global,Bee Gees,Stayin' Alive,1977,US,True,Bee Gees,Stayin' Alive,https://music.apple.com/us/album/stayin-alive/1440899890?i=1440900114&uo=4,audio\global\08.m4a
+global_09,global,ABBA,Dancing Queen,1976,US,True,ABBA,Dancing Queen,https://music.apple.com/us/album/dancing-queen/1422648512?i=1422648513&uo=4,audio\global\09.m4a
+global_10,global,Eagles,Hotel California,1977,US,True,Eagles,Hotel California,https://music.apple.com/us/album/hotel-california/635770200?i=635770202&uo=4,audio\global\10.m4a
+global_11,global,Led Zeppelin,Stairway to Heaven,1971,US,True,Led Zeppelin,Stairway to Heaven,https://music.apple.com/us/album/stairway-to-heaven/580708175?i=580708180&uo=4,audio\global\11.m4a
+global_12,global,John Lennon,Imagine,1971,US,True,John Lennon,Imagine,https://music.apple.com/us/album/imagine/1440853752?i=1440853776&uo=4,audio\global\12.m4a
+global_13,global,Nirvana,Smells Like Teen Spirit,1991,US,True,Nirvana,Smells Like Teen Spirit,https://music.apple.com/us/album/smells-like-teen-spirit/1440783617?i=1440783625&uo=4,audio\global\13.m4a
+global_14,global,a-ha,Take On Me,1985,US,True,a-ha,Take On Me,https://music.apple.com/us/album/take-on-me/380907762?i=380907765&uo=4,audio\global\14.m4a
+global_15,global,Toto,Africa,1982,US,True,Toto,Africa,https://music.apple.com/us/album/africa/185716551?i=185717604&uo=4,audio\global\15.m4a
+global_16,global,Rick Astley,Never Gonna Give You Up,1987,US,True,Rick Astley,Never Gonna Give You Up,https://music.apple.com/us/album/never-gonna-give-you-up/1559885420?i=1559885421&uo=4,audio\global\16.m4a
+global_17,global,Beyoncé,Crazy in Love,2003,US,True,Beyoncé,Crazy in Love,https://music.apple.com/us/album/crazy-in-love/1472020056?i=1472021081&uo=4,audio\global\17.m4a
+global_18,global,Adele,Rolling in the Deep,2010,US,True,Adele,Rolling in the Deep,https://music.apple.com/us/album/rolling-in-the-deep/1544491232?i=1544491233&uo=4,audio\global\18.m4a
+global_19,global,Mark Ronson,Uptown Funk,2014,US,True,Mark Ronson,Uptown Funk (feat. Bruno Mars),https://music.apple.com/us/album/uptown-funk-feat-bruno-mars/943946661?i=943946671&uo=4,audio\global\19.m4a
+global_20,global,Ed Sheeran,Shape of You,2017,US,True,Ed Sheeran,Shape of You,https://music.apple.com/us/album/shape-of-you/1193701079?i=1193701392&uo=4,audio\global\20.m4a
+global_21,global,Luis Fonsi,Despacito,2017,US,True,Luis Fonsi & Daddy Yankee,Despacito,https://music.apple.com/us/album/despacito/1447401519?i=1447401620&uo=4,audio\global\21.m4a
+global_22,global,Billie Eilish,bad guy,2019,US,True,Billie Eilish,bad guy,https://music.apple.com/us/album/bad-guy/1450695723?i=1450695739&uo=4,audio\global\22.m4a
+global_23,global,The Weeknd,Blinding Lights,2019,US,True,The Weeknd,Blinding Lights,https://music.apple.com/us/album/blinding-lights/1505683705?i=1505683988&uo=4,audio\global\23.m4a
+global_24,global,Taylor Swift,Shake It Off,2014,US,True,Taylor Swift,Shake It Off,https://music.apple.com/us/album/shake-it-off/1440933512?i=1440933651&uo=4,audio\global\24.m4a
+global_25,global,Daft Punk,Get Lucky,2013,US,True,"Daft Punk, Pharrell Williams & Nile Rodgers",Get Lucky,https://music.apple.com/us/album/get-lucky/617154241?i=617154366&uo=4,audio\global\25.m4a
+global_26,global,Harry Styles,As It Was,2022,US,True,Harry Styles,As It Was,https://music.apple.com/us/album/as-it-was/1615584999?i=1615585008&uo=4,audio\global\26.m4a
+global_27,global,Frank Sinatra,Fly Me to the Moon,1964,US,True,Frank Sinatra,Fly Me to the Moon,https://music.apple.com/us/album/fly-me-to-the-moon/1443165749?i=1443167444&uo=4,audio\global\27.m4a
+global_28,global,Nikolai Rimsky-Korsakov,Flight of the Bumblebee,1900,US,True,Nikolai Rimsky-Korsakov,Flight of the Bumblebee,https://music.apple.com/us/album/flight-of-the-bumblebee/394025913?i=394025930&uo=4,audio\global\28.m4a
+global_29,global,Vienna Philharmonic,Symphony No. 5 in C Minor,1808,US,True,Vienna Philharmonic & Carlos Kleiber,"Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio",https://music.apple.com/us/album/symphony-no-5-in-c-minor-op-67-i-allegro-con-brio/1644892939?i=1644892943&uo=4,audio\global\29.m4a
+japan_00,japan,YOASOBI,アイドル,2023,JP,True,YOASOBI,アイドル,https://music.apple.com/jp/album/%E3%82%A2%E3%82%A4%E3%83%89%E3%83%AB/1679278166?i=1679278167&uo=4,audio\japan\00.m4a
+japan_01,japan,YOASOBI,夜に駆ける,2019,JP,True,YOASOBI,夜に駆ける,https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AB%E9%A7%86%E3%81%91%E3%82%8B/1542182291?i=1542182776&uo=4,audio\japan\01.m4a
+japan_02,japan,Creepy Nuts,Bling-Bang-Bang-Born,2024,JP,True,Creepy Nuts,Bling-Bang-Bang-Born,https://music.apple.com/jp/album/bling-bang-bang-born/1720332180?i=1720332181&uo=4,audio\japan\02.m4a
+japan_03,japan,Mrs. GREEN APPLE,ライラック,2024,JP,True,Mrs. GREEN APPLE,ライラック,https://music.apple.com/jp/album/%E3%83%A9%E3%82%A4%E3%83%A9%E3%83%83%E3%82%AF/1739088465?i=1739088799&uo=4,audio\japan\03.m4a
+japan_04,japan,Mrs. GREEN APPLE,ケセラセラ,2023,JP,True,Mrs. GREEN APPLE,ケセラセラ,https://music.apple.com/jp/album/%E3%82%B1%E3%82%BB%E3%83%A9%E3%82%BB%E3%83%A9/1681600496?i=1681600508&uo=4,audio\japan\04.m4a
+japan_05,japan,Official髭男dism,Pretender,2019,JP,True,Official髭男dism,Pretender,https://music.apple.com/jp/album/pretender/1479397582?i=1479397873&uo=4,audio\japan\05.m4a
+japan_06,japan,Official髭男dism,Subtitle,2022,JP,True,Official髭男dism,Subtitle,https://music.apple.com/jp/album/subtitle/1648108987?i=1648108988&uo=4,audio\japan\06.m4a
+japan_07,japan,King Gnu,白日,2019,JP,True,King Gnu,白日,https://music.apple.com/jp/album/%E7%99%BD%E6%97%A5/1536027147?i=1536027148&uo=4,audio\japan\07.m4a
+japan_08,japan,米津玄師,Lemon,2018,JP,True,米津玄師,Lemon,https://music.apple.com/jp/album/lemon/1537460610?i=1537460612&uo=4,audio\japan\08.m4a
+japan_09,japan,米津玄師,KICK BACK,2022,JP,True,米津玄師,KICK BACK,https://music.apple.com/jp/album/kick-back/1648272179?i=1648272180&uo=4,audio\japan\09.m4a
+japan_10,japan,Ado,うっせぇわ,2020,JP,True,Ado,うっせぇわ,https://music.apple.com/jp/album/%E3%81%86%E3%81%A3%E3%81%9B%E3%81%87%E3%82%8F/1535123741?i=1535123742&uo=4,audio\japan\10.m4a
+japan_11,japan,Ado,新時代,2022,JP,True,Ado,新時代,https://music.apple.com/jp/album/%E6%96%B0%E6%99%82%E4%BB%A3/1802573171?i=1802573949&uo=4,audio\japan\11.m4a
+japan_12,japan,LiSA,紅蓮華,2019,JP,True,LiSA,紅蓮華,https://music.apple.com/jp/album/%E7%B4%85%E8%93%AE%E8%8F%AF/1538286722?i=1538286723&uo=4,audio\japan\12.m4a
+japan_13,japan,Vaundy,怪獣の花唄,2020,JP,True,Vaundy,怪獣の花唄,https://music.apple.com/jp/album/%E6%80%AA%E7%8D%A3%E3%81%AE%E8%8A%B1%E5%94%84/1706831732?i=1706832137&uo=4,audio\japan\13.m4a
+japan_14,japan,藤井 風,死ぬのがいいわ,2020,JP,True,藤井 風,死ぬのがいいわ,https://music.apple.com/jp/album/%E6%AD%BB%E3%81%AC%E3%81%AE%E3%81%8C%E3%81%84%E3%81%84%E3%82%8F/1505498769?i=1505498792&uo=4,audio\japan\14.m4a
+japan_15,japan,Aimer,残響散歌,2022,JP,True,Aimer,残響散歌,https://music.apple.com/jp/album/%E6%AE%8B%E9%9F%BF%E6%95%A3%E6%AD%8C/1694666652?i=1694666919&uo=4,audio\japan\15.m4a
+japan_16,japan,あいみょん,マリーゴールド,2018,JP,True,あいみょん,マリーゴールド,https://music.apple.com/jp/album/%E3%83%9E%E3%83%AA%E3%83%BC%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89/1402042886?i=1402042897&uo=4,audio\japan\16.m4a
+japan_17,japan,優里,ドライフラワー,2020,JP,True,優里,ドライフラワー,https://music.apple.com/jp/album/%E3%83%89%E3%83%A9%E3%82%A4%E3%83%95%E3%83%A9%E3%83%AF%E3%83%BC/1534620182?i=1534620183&uo=4,audio\japan\17.m4a
+japan_18,japan,tuki.,晩餐歌,2023,JP,True,tuki.,晩餐歌 - Bansanka,https://music.apple.com/jp/album/%E6%99%A9%E9%A4%90%E6%AD%8C-bansanka/1705678977?i=1705678978&uo=4,audio\japan\18.m4a
+japan_19,japan,Number_i,GOAT,2024,JP,True,Number_i,GOAT,https://music.apple.com/jp/album/goat/6780727833?i=6780727834&uo=4,audio\japan\19.m4a
+japan_20,japan,宇多田ヒカル,First Love,1999,JP,True,宇多田ヒカル,First Love,https://music.apple.com/jp/album/first-love/1445054986?i=1445055008&uo=4,audio\japan\20.m4a
+japan_21,japan,竹内まりや,プラスティック・ラブ,1984,JP,True,竹内まりや,プラスティック・ラブ,https://music.apple.com/jp/album/%E3%83%97%E3%83%A9%E3%82%B9%E3%83%86%E3%82%A3%E3%83%83%E3%82%AF-%E3%83%A9%E3%83%96/1541673202?i=1541673399&uo=4,audio\japan\21.m4a
+japan_22,japan,坂本九,上を向いて歩こう,1961,JP,True,坂本九,上を向いて歩こう,https://music.apple.com/jp/album/%E4%B8%8A%E3%82%92%E5%90%91%E3%81%84%E3%81%A6%E6%AD%A9%E3%81%93%E3%81%86/1465042016?i=1465042017&uo=4,audio\japan\22.m4a
+japan_23,japan,Da-iCE,スターマイン,2021,JP,True,Da-iCE,スターマイン,https://music.apple.com/jp/album/%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%9E%E3%82%A4%E3%83%B3/1687923173?i=1687923180&uo=4,audio\japan\23.m4a
+japan_24,japan,back number,高嶺の花子さん,2013,JP,True,back number,高嶺の花子さん,https://music.apple.com/jp/album/%E9%AB%98%E5%B6%BA%E3%81%AE%E8%8A%B1%E5%AD%90%E3%81%95%E3%82%93/1451577721?i=1451577752&uo=4,audio\japan\24.m4a
+japan_25,japan,星野源,恋,2016,JP,True,星野源,恋,https://music.apple.com/jp/album/%E6%81%8B/1156375337?i=1156375396&uo=4,audio\japan\25.m4a
+japan_26,japan,ずっと真夜中でいいのに。,秒針を噛む,2018,JP,True,ずっと真夜中でいいのに。,秒針を噛む,https://music.apple.com/jp/album/%E7%A7%92%E9%87%9D%E3%82%92%E5%99%9B%E3%82%80/1481464093?i=1481464176&uo=4,audio\japan\26.m4a
+korea_00,korea,BTS,Dynamite,2020,KR,True,BTS,Dynamite,https://music.apple.com/us/album/dynamite/1596532185?i=1596532400&uo=4,audio\korea\00.m4a
+korea_01,korea,BTS,Butter,2021,KR,True,BTS,Butter,https://music.apple.com/us/album/butter/1627573936?i=1627575769&uo=4,audio\korea\01.m4a
+korea_02,korea,PSY,Gangnam Style,2012,KR,True,PSY,Gangnam Style,https://music.apple.com/us/album/gangnam-style/1445144506?i=1445144527&uo=4,audio\korea\02.m4a
+korea_03,korea,BLACKPINK,DDU-DU DDU-DU,2018,KR,True,BLACKPINK,DDU-DU DDU-DU,https://music.apple.com/us/album/ddu-du-ddu-du/1551479990?i=1551479993&uo=4,audio\korea\03.m4a
+korea_04,korea,BLACKPINK,How You Like That,2020,KR,True,BLACKPINK,How You Like That,https://music.apple.com/us/album/how-you-like-that/1533894050?i=1533894669&uo=4,audio\korea\04.m4a
+korea_05,korea,ROSÉ,APT.,2024,KR,True,ROSÉ & Bruno Mars,APT.,https://music.apple.com/us/album/apt/1773452219?i=1773452221&uo=4,audio\korea\05.m4a
+korea_06,korea,NewJeans,Hype Boy,2022,KR,True,NewJeans,Hype Boy,https://music.apple.com/us/album/hype-boy/1635469682?i=1635469851&uo=4,audio\korea\06.m4a
+korea_07,korea,NewJeans,Ditto,2022,KR,True,NewJeans,Ditto,https://music.apple.com/us/album/ditto/1657231957?i=1657231962&uo=4,audio\korea\07.m4a
+korea_08,korea,NewJeans,Super Shy,2023,KR,True,NewJeans,Super Shy,https://music.apple.com/us/album/super-shy/1692686264?i=1692686518&uo=4,audio\korea\08.m4a
+korea_09,korea,IU,Good Day,2010,KR,True,IU,Good Day,https://music.apple.com/us/album/good-day/409076726?i=409076748&uo=4,audio\korea\09.m4a
+korea_10,korea,IU,Through the Night,2017,KR,True,IU,Through the Night,https://music.apple.com/us/album/through-the-night/1229073300?i=1229073406&uo=4,audio\korea\10.m4a
+korea_11,korea,BIGBANG,Fantastic Baby,2012,KR,True,BIGBANG,Fantastic Baby,https://music.apple.com/us/album/fantastic-baby/1337452970?i=1337452979&uo=4,audio\korea\11.m4a
+korea_12,korea,BIGBANG,Lies,2007,KR,True,BIGBANG,Lies,https://music.apple.com/us/album/lies/1330947214?i=1330947216&uo=4,audio\korea\12.m4a
+korea_13,korea,Wonder Girls,Tell Me,2007,KR,True,Wonder Girls,Tell Me,https://music.apple.com/us/album/tell-me/1698696987?i=1698697000&uo=4,audio\korea\13.m4a
+korea_14,korea,Girls' Generation,Gee,2009,KR,True,Girls' Generation,Gee,https://music.apple.com/us/album/gee/854911623?i=854911644&uo=4,audio\korea\14.m4a
+korea_15,korea,aespa,Supernova,2024,KR,True,aespa,Supernova,https://music.apple.com/us/album/supernova/1773694541?i=1773694544&uo=4,audio\korea\15.m4a
+korea_16,korea,IVE,LOVE DIVE,2022,KR,True,IVE,LOVE DIVE,https://music.apple.com/us/album/love-dive/1616804151?i=1616804152&uo=4,audio\korea\16.m4a
+korea_17,korea,(G)I-DLE,Queencard,2023,KR,True,i-dle,Queencard,https://music.apple.com/us/album/queencard/1802620982?i=1802620989&uo=4,audio\korea\17.m4a
+korea_18,korea,Jung Kook,Seven,2023,KR,True,Jung Kook & Latto,Seven,https://music.apple.com/us/album/seven/1703097178?i=1703097180&uo=4,audio\korea\18.m4a
+korea_19,korea,Jimin,Like Crazy,2023,KR,True,Jimin,Like Crazy,https://music.apple.com/us/album/like-crazy/1676947234?i=1676947244&uo=4,audio\korea\19.m4a
+korea_20,korea,HUNTR/X,Golden,2025,KR,True,"HUNTR/X, EJAE, AUDREY NUNA, REI AMI & KPop Demon Hunters Cast",Golden,https://music.apple.com/us/album/golden/1820264137?i=1820264150&uo=4,audio\korea\20.m4a
+korea_21,korea,YOUNHA,Event Horizon,2022,KR,True,Younha,Event Horizon,https://music.apple.com/us/album/event-horizon/1616649347?i=1616649362&uo=4,audio\korea\21.m4a
+korea_22,korea,Busker Busker,Cherry Blossom Ending,2012,KR,True,Busker Busker,Cherry Blossom Ending,https://music.apple.com/us/album/cherry-blossom-ending/1570571992?i=1570572282&uo=4,audio\korea\22.m4a
+korea_23,korea,SEVENTEEN,Super,2023,KR,True,SEVENTEEN,Super,https://music.apple.com/us/album/super/1681324004?i=1681324047&uo=4,audio\korea\23.m4a
+korea_24,korea,Stray Kids,S-Class,2023,KR,True,Stray Kids,S-Class,https://music.apple.com/us/album/s-class/1686489462?i=1686489691&uo=4,audio\korea\24.m4a
+korea_25,korea,Seo Taiji and Boys,I Know,1992,KR,True,Seotaiji,I Know,https://music.apple.com/us/album/i-know/1648248511?i=1648248514&uo=4,audio\korea\25.m4a
+korea_26,korea,Kim Kwang Seok,서른 즈음에,1994,KR,True,Kim Kwang Seok,서른 즈음에,https://music.apple.com/us/album/%EC%84%9C%EB%A5%B8-%EC%A6%88%EC%9D%8C%EC%97%90/1501124552?i=1501124618&uo=4,audio\korea\26.m4a
