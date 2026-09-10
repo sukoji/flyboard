@@ -1,0 +1,7 @@
+torch>=2.3        # CUDA build; one 8 GB GPU is enough
+numpy
+scipy
+pandas
+pyarrow
+matplotlib
+# plus ffmpeg on PATH (audio decoding, video)

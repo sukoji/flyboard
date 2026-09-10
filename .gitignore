@@ -1,0 +1,12 @@
+data/
+audio/
+__pycache__/
+*.pyc
+*_log.txt
+*.log
+*.err
+results/series.npz
+results/runs/*_rates.npz
+docs/_render/
+assets/fonts/
+assets/preview_brain.mp4
