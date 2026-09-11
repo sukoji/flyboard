@@ -21,6 +21,7 @@ const bScene = new THREE.Scene();
 bScene.background = new THREE.Color(0x07080d);
 const bCam = new THREE.PerspectiveCamera(35, 1, 0.01, 50);
 bCam.position.set(2.9, 1.9, 3.1);
+const baseDist = bCam.position.length();
 const controls = new OrbitControls(bCam, bCanvas);
 controls.enableDamping = true;
 controls.autoRotate = true;
@@ -61,6 +62,7 @@ function resize() {
   bRenderer.setSize(b.width, b.height, false);
   bCam.aspect = b.width / b.height;
   bCam.updateProjectionMatrix();
+  bCam.position.setLength(baseDist * Math.max(1, 1.05 / bCam.aspect ** 0.8));   // portrait screens: step back so the whole CNS fits
   brain.uniforms.uPix.value = b.height * bRenderer.getPixelRatio();
   const f = fCanvas.getBoundingClientRect();
   fRenderer.setSize(f.width, f.height, false);
@@ -87,7 +89,10 @@ function renderList() {
       <div><div class="t">${esc(s.title)}</div><div class="a">${esc(s.artist)}${tab === "all" ? " · " + CHART_NAME[s.chart] : ""}${s.id in replayIdx ? ' <span class="rp">● replay</span>' : ""}</div></div>
       <div class="s" style="color:${COLORS[s.chart]}">${s.score.toFixed(1)}</div>
     </div>`).join("");
-  $("list").querySelectorAll(".song").forEach((el) => el.onclick = () => select(el.dataset.id));
+  $("list").querySelectorAll(".song").forEach((el) => el.onclick = () => {
+    select(el.dataset.id);
+    if (innerWidth <= 1100) scrollTo({ top: 0, behavior: "smooth" });   // phones: jump back up to the brain
+  });
 }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 

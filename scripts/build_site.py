@@ -156,7 +156,8 @@ def hero_page(top1, stats, cover_rel):
 
 
 def page(body, extra_css=""):
-    return f"<!doctype html><html><head><meta charset='utf-8'><style>{CSS}{extra_css}</style></head><body>{body}</body></html>"
+    return (f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>"
+            f"<title>FLYBOARD — the music chart voted by a fruit fly brain</title><style>{CSS}{extra_css}</style></head><body>{body}</body></html>")
 
 
 def shoot(html_path, png_path, width=1200, height=6000):
@@ -207,6 +208,34 @@ nav button.on { background:#f4f5f8; color:#07080d; }
 nav a.cta { font:800 14px Inter,sans-serif; color:#07080d; background:#c77dff; padding:9px 16px; border-radius:99px; text-decoration:none; margin-left:12px; }
 .wrap { display:flex; flex-direction:column; align-items:center; }
 video { width:1200px; max-width:100%; border-radius:16px; margin:28px 0 8px; border:1px solid #1d2230; }
+.page { width:min(1200px, 100%); }
+@media (max-width: 760px) {
+  nav { flex-wrap:wrap; gap:6px; padding:10px; }
+  nav button, nav a.cta { font-size:12px; padding:7px 11px; }
+  nav a.cta { margin-left:0; }
+  .page { padding:22px 14px 26px; }
+  .mast { flex-wrap:wrap; gap:4px 12px; align-items:center; }
+  .logo, .chartname { font-size:44px; }
+  .logo .fly { font-size:34px; }
+  .sub { font-size:15px; } .sub2 { font-size:12px; }
+  .kpis { flex-wrap:wrap; gap:12px 22px; } .kpi b { font-size:26px; }
+  .ref { padding:10px 12px; gap:10px; } .ref .s { font-size:26px; }
+  .podium, .hero .trio { grid-template-columns:1fr; gap:10px; }
+  .card { display:grid; grid-template-columns:120px minmax(0,1fr); align-items:center; border-radius:14px; }
+  .card img { width:120px; height:120px; }
+  .card .rk, .card.first .rk, .hero .card .rk { font-size:34px; top:6px; left:8px; }
+  .card .body { padding:10px 12px; }
+  .card .t, .card.first .t { font-size:17px; }
+  .card .row { margin-top:6px; } .card .sc { font-size:30px; }
+  .tags { margin-top:6px; }
+  .hero .card .chart { top:auto; bottom:8px; right:8px; font-size:10px; padding:3px 8px; }
+  .item { grid-template-columns:34px 46px minmax(0,1fr) 64px; gap:10px; padding:8px 2px; }
+  .item > div:nth-child(4) { display:none; }
+  .item img { width:46px; height:46px; }
+  .item .rk { font-size:22px; } .item .sc { font-size:22px; }
+  .foot { font-size:11px; }
+  video { border-radius:10px; margin:16px 0 4px; }
+}
 """
     video = '<video src="flyboard_countdown.mp4" controls muted loop playsinline></video>' if (DOCS / "flyboard_countdown.mp4").exists() else ""
     site = page(f"""<nav>{tabs}<a class="cta" href="viewer.html">🪰 3D VIEWER →</a></nav><div class="wrap">{pages['hero'].replace('../covers', 'covers')}{video}{secs}</div>
