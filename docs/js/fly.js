@@ -1,8 +1,8 @@
 // A cartoon male fruit fly for three.js (toon shading + ink outlines), animated by motor-neuron channels (0..1):
 //   legs | Lfl Rfl Lml Rml Lhl Rhl, wingL wingR, abdomen, jump, proboscis, neckL neckR, haltere, ear, love
 // Not a physics model: each body part moves in proportion to the activity of its own motor neurons.
-// Still a Drosophila where it counts: red compound eyes, aristae, halteres, six legs, striped abdomen with the
-// male's dark tip. Expressions are read off the same channels: it bops to the sound (ear), squints and sweats
+// Still a Drosophila where it counts: aristae, halteres, six legs, striped abdomen with the male's dark tip.
+// Eyes are drawn cartoon-style (white with pupils); a real fly's compound eyes are red. Expressions are read off the same channels: it bops to the sound (ear), squints and sweats
 // when the abdominal/flight motor latches on (abdomen/wings), and gets heart pupils for a high FLY SCORE (love).
 // The headphones are for style: a fly hears with its antennae.
 import * as THREE from "three";
@@ -147,7 +147,7 @@ export class Fly {
     this.jump = 0;
     this.scroll = 0;
     this.accent = "#4dabff";
-    const skin = toon(0xefcf9f), thx = toon(0xcf9a60), dark = toon(0x6a4028), eyeRed = toon(0xe22a2a);
+    const skin = toon(0xefcf9f), thx = toon(0xcf9a60), dark = toon(0x6a4028), eyeWhite = toon(0xffffff);
 
     // thorax + abdomen (pivots at the waist so it can curl)
     this.body.add(blob([0.46, 0.44, 0.42], thx, [0.12, 0.52, 0]));
@@ -172,14 +172,18 @@ export class Fly {
       const eye = new THREE.Group();
       eye.position.copy(V(0.2, 0.08, 0).add(dir.clone().multiplyScalar(0.38)));
       eye.quaternion.setFromUnitVectors(V(0, 0, 1), dir);   // local +Z looks outward
-      eye.add(blob([0.25, 0.29, 0.2], eyeRed, [0, 0, 0], 0.06));
-      const pupil = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), toon(0x1a0f14));
-      pupil.scale.set(0.12, 0.15, 0.05);
-      pupil.position.set(0.02, 0.0, 0.18);
+      eye.add(blob([0.25, 0.29, 0.2], eyeWhite, [0, 0, 0], 0.06));
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), new THREE.MeshBasicMaterial({ color: 0x1a0f14 }));
+      pupil.scale.set(0.15, 0.18, 0.05);
+      pupil.position.set(0.02, -0.01, 0.17);
       eye.add(pupil);
-      const shine = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-      shine.scale.set(0.05, 0.05, 0.02);
-      shine.position.set(0.06, 0.08, 0.2);
+      const shine = new THREE.Group();          // two sparkles
+      for (const [x, y, r] of [[0.07, 0.07, 0.055], [-0.03, -0.07, 0.025]]) {
+        const d = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        d.scale.set(r, r, 0.02);
+        d.position.set(x, y, 0.215);
+        shine.add(d);
+      }
       eye.add(shine);
       const heart = new THREE.Mesh(new THREE.ShapeGeometry(heartShape(0.13)), new THREE.MeshBasicMaterial({ color: 0xff3d7f }));
       heart.position.set(0.0, 0.0, 0.205);
@@ -350,7 +354,7 @@ export class Fly {
       e.pupil.visible = e.shine.visible = !inLove;
       e.heart.scale.setScalar(1 + 0.12 * Math.sin(2 * Math.PI * 2.5 * t));
       e.eye.scale.y = Math.min(blink, 1 - 0.25 * flinch);
-      e.pupil.scale.y = 0.15 * (1 - 0.5 * flinch);
+      e.pupil.scale.y = 0.18 * (1 - 0.5 * flinch);
     }
     this.blush.forEach((b) => { b.material.opacity = 0.35 + 0.5 * love; });
     this.smile.scale.set(1, 1 - 1.6 * flinch + 0.3 * love, 1);   // grin flattens and flips when flinching

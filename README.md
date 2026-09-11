@@ -130,8 +130,8 @@ listens (white noise: 4 of 4), and it then stays on at ~25 Hz, because this simp
 switch it off again. Fly courtship song switched it on in **1 of 8** listens, and only late. It barely differs between
 songs, so it is shown but not used for ranking. Nobody gets the fly to walk or to stick its tongue out.
 
-The fly on screen is a cartoon male *D. melanogaster* (three.js, toon-shaded: red compound eyes, aristae, halteres,
-six legs, striped abdomen with the male's dark tip) and a **puppet, not a physics simulation**: each part moves with
+The fly on screen is a cartoon male *D. melanogaster* (three.js, toon-shaded: aristae, halteres, six legs, striped
+abdomen with the male's dark tip; the eyes are drawn cartoon-style, a real fly's are red) and a **puppet, not a physics simulation**: each part moves with
 the recorded activity of its own motor neurons (MaleCNS `subclass` fl/ml/hl, wm, ad, pm, nm, hm; giant fiber → TTMn for
 hops), scaled so the strongest response any song produced is full motion. Its face reads the same channels: it bops to
 the sound, **squints and sweats when the abdominal/flight latch switches on**, and gets **heart eyes for a high FLY
