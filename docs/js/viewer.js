@@ -98,6 +98,7 @@ function select(id, startReplay = false) {
   const color = COLORS[current.chart];
   document.documentElement.style.setProperty("--acc", color);
   brain.setColor(color);
+  fly.setAccent(color);
   const d = data.song(current);
   brain.setSong(d.idx, d.rate, d.fp);
   mode = "avg";
@@ -108,9 +109,11 @@ function select(id, startReplay = false) {
     <div class="title">${esc(current.title)}</div><div class="artist">${esc(current.artist)}</div>
     <div class="score"><b>${current.score.toFixed(1)}</b><span>FLY SCORE ± ${current.spread.toFixed(1)}<br>0 = white noise · 100 = brain's response to fly love song</span></div>
     <div class="scale"><i style="width:${Math.max(0, current.score)}%"></i><em style="left:${fly_ref}%">fly song</em></div>
-    <div class="stats"><div><b>${current.lit}</b>neurons lit</div><div><b>${current.gf} Hz</b>giant fiber</div><div><b>${current.n}</b>active somata</div></div>`;
+    <div class="stats"><div><b>${current.lit}</b>neurons lit</div><div><b>${current.gf} Hz</b>giant fiber</div><div><b>${current.n}</b>active somata</div></div>
+    <div class="eq" id="eq">${"<i></i>".repeat(28)}</div>
+    ${current.listen ? `<a class="listen" href="${current.listen}" target="_blank" rel="noopener">Listen on Apple Music ↗</a>` : ""}`;
   $("replay").disabled = !(id in replayIdx);
-  $("hud").innerHTML = `<b>${esc(current.title)}</b> · ${current.n.toLocaleString()} neurons active<br>mode: average blink`;
+  $("hud").innerHTML = `<b>${esc(current.title)}</b> · ${current.n.toLocaleString()} neurons active<br>each dot = one neuron at its real position · lit = driven by this song`;
   renderList();
   if (startReplay) startReplayMode();
 }
@@ -134,11 +137,13 @@ function bodyChannels() {
     for (const [k, v] of Object.entries(seg.body)) ch[k] = v[rp.f];
     ch.legs = ["Lfl", "Rfl", "Lml", "Rml", "Lhl", "Rhl"].reduce((a, k) => a + (ch[k] || 0), 0) / 6;
     ch.wings = ((ch.wingL || 0) + (ch.wingR || 0)) / 2;
+    ch.ear = Math.min(1, 1.6 * (ch.ear || 0));
+    ch.love = Math.max(0, current.score / 100);
     return ch;
   }
   const b = current.body, ring = current.ring;
   const r = ring[Math.floor((t * 4) % ring.length)];
-  return { ...b, wingL: b.wings, wingR: b.wings, ear: Math.min(1, 1.6 * (r[0] + r[1]) / 2) };
+  return { ...b, wingL: b.wings, wingR: b.wings, ear: Math.min(1, 1.6 * (r[0] + r[1]) / 2), love: Math.max(0, current.score / 100) };
 }
 function tick() {
   const dt = Math.min(0.05, clock.getDelta());
@@ -150,6 +155,8 @@ function tick() {
     while (rp.acc >= replay.meta.frame_ms / 1000) {
       rp.acc -= replay.meta.frame_ms / 1000;
       brain.setSpikes(replay.frame(rp.seg, rp.f));
+      const before = seg.t0 + rp.f * replay.meta.frame_ms / 1000;
+      if (seg.latch_s && before < seg.latch_s && before + replay.meta.frame_ms / 1000 >= seg.latch_s) toast("⚡ Motor latch ON: the abdomen and flight motor just switched on");
       rp.f = (rp.f + 1) % seg.frames.length;
       if (rp.f === 0) brain.clearGlow();
     }
@@ -163,6 +170,15 @@ function tick() {
   fly.update(dt, ch);
   grid.position.x = -(fly.scroll % (12 / 36));
   for (const [k] of METERS) $("m-" + k).style.width = `${Math.round(100 * (ch[k] ?? 0))}%`;
+  $("mood").textContent = mood(ch);
+  const eq = $("eq");
+  if (eq) {
+    const ring = current.ring, pos = (t * 4) % ring.length;
+    [...eq.children].forEach((bar, i) => {
+      const r = ring[Math.floor(pos + i) % ring.length], wob = 0.75 + 0.25 * Math.sin(t * 9 + i * 1.3);
+      bar.style.height = `${Math.round(4 + 34 * Math.min(1, 1.3 * (r[0] + r[1]) * wob))}px`;
+    });
+  }
   const a = 0.6 + 0.5 * Math.sin(t * 0.25);
   fCam.position.set(0.2 + 5.6 * Math.cos(a), 2.1, 5.6 * Math.sin(a));
   fCam.lookAt(0.1, 0.15, 0);
@@ -178,6 +194,22 @@ function tick() {
     el.style.opacity = p.z < 1 ? 1 : 0;
   });
   requestAnimationFrame(tick);
+}
+
+function mood(ch) {
+  // one-line reading of the body channels (and the score) for humans
+  if ((ch.love || 0) > 0.8) return "💘 in love: this is what fly courtship sounds like";
+  if ((ch.abdomen || 0) > 0.35 || (ch.wings || 0) > 0.35) return "😖 flinching: abdomen + flight motor switched on";
+  if ((ch.jump || 0) > 0.5) return "⚡ jumpy: giant fiber firing";
+  return "🎧 listening";
+}
+
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(toast.h);
+  toast.h = setTimeout(() => el.classList.remove("on"), 2600);
 }
 
 renderTabs();

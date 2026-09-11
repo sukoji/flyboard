@@ -23,6 +23,7 @@
   .scale i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--acc); border-radius: 99px; }
   .scale em { position: absolute; top: -30px; font-style: normal; font-size: 13px; color: #9ecbff; transform: translateX(-50%); }
   .tag { position: absolute; font-size: 15px; font-weight: 800; letter-spacing: 2px; color: #8a90a3; }
+  .mood { position: absolute; left: 1340px; top: 600px; width: 560px; text-align: center; font-size: 30px; font-weight: 800; }
   .clock { position: absolute; left: 1340px; top: 78px; width: 560px; text-align: center; font: 15px ui-monospace, monospace; color: #8a90a3; }
   .meters { position: absolute; left: 1380px; top: 660px; width: 500px; }
   .meter { display: grid; grid-template-columns: 130px 1fr 170px; gap: 14px; align-items: center; margin: 12px 0; font-size: 16px; }
@@ -51,6 +52,7 @@
   <div class="tag" style="left:520px;top:70px;width:820px;text-align:center">BRAIN + NERVE CORD · 140,024 NEURONS</div>
   <div class="tag" style="left:1340px;top:48px;width:560px;text-align:center">BODY · DRIVEN BY ITS MOTOR NEURONS</div>
   <div class="clock" id="clock"></div>
+  <div class="mood" id="mood"></div>
   <div class="meters" id="meters"></div>
   <div class="firing" id="firing"></div>
 </div>

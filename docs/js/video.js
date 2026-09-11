@@ -84,6 +84,7 @@ window.renderAt = (i) => {
     brain.clearGlow();
     fScene.remove(fly.group);
     fly = new Fly();
+    fly.setAccent(color);
     fScene.add(fly.group);
     $("kicker").textContent = s.kicker;
     $("title").textContent = s.title;
@@ -106,7 +107,9 @@ window.renderAt = (i) => {
   ch.legs = ["Lfl", "Rfl", "Lml", "Rml", "Lhl", "Rhl"].reduce((a, x) => a + (ch[x] || 0), 0) / 6;
   ch.wings = ((ch.wingL || 0) + (ch.wingR || 0)) / 2;
   ch.ear = Math.min(1, 1.6 * (ch.ear || 0));
+  ch.love = Math.max(0, s.score / 100);
   fly.update(1 / FPS, ch);
+  $("mood").textContent = ch.love > 0.8 ? "💘 in love" : (ch.abdomen > 0.35 || ch.wings > 0.35) ? "😖 flinching" : ch.jump > 0.5 ? "⚡ jumpy" : "🎧 listening";
   grid.position.x = -(fly.scroll % (12 / 36));
   for (const [key] of METERS) $("m-" + key).style.width = `${Math.round(100 * (ch[key] || 0))}%`;
   bR.render(bScene, bCam);

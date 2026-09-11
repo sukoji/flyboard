@@ -64,6 +64,15 @@
   .meter .bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .15s; }
   .meter .src { color: var(--muted); font-size: 10.5px; }
   .note { color: var(--muted); font-size: 11.5px; line-height: 1.55; }
+  .eq { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 14px; }
+  .eq i { flex: 1; background: linear-gradient(to top, var(--acc), #fff); border-radius: 2px; opacity: .85; height: 4px; }
+  .listen { display: inline-block; margin-top: 12px; font-size: 12.5px; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid #2a3044; padding: 6px 12px; border-radius: 99px; }
+  .flycap { position: relative; }
+  .flycap .legend { position: absolute; left: 12px; bottom: 8px; right: 12px; font-size: 11px; color: var(--muted); text-shadow: 0 1px 4px #000; pointer-events: none; }
+  .flycap .legend b { color: var(--ink); }
+  .flycap .mood { position: absolute; left: 12px; top: 10px; font-weight: 800; font-size: 14px; text-shadow: 0 1px 6px #000; pointer-events: none; }
+  #toast { position: absolute; left: 50%; top: 58px; transform: translate(-50%, -10px); background: #ffcf5a; color: #1a1300; font-weight: 800; font-size: 13px; padding: 9px 16px; border-radius: 99px; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
   #loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 9; font-family: Anton, Impact, sans-serif; font-size: 28px; }
   @media (max-width: 1100px) {
     html, body { overflow: auto; }
@@ -95,6 +104,7 @@
     <canvas id="brain"></canvas>
     <div class="hud" id="hud"></div>
     <div id="clock"></div>
+    <div id="toast"></div>
     <div class="label" data-r="0">CENTRAL BRAIN</div>
     <div class="label" data-r="1a">OPTIC LOBE</div>
     <div class="label" data-r="1b">OPTIC LOBE</div>
@@ -105,7 +115,8 @@
     </div>
   </div>
   <section class="right">
-    <canvas id="fly"></canvas>
+    <div class="flycap"><canvas id="fly"></canvas><div class="mood" id="mood"></div>
+      <div class="legend"><b>♪</b> sound reaching its ears &nbsp;·&nbsp; <b>♥</b> FLY SCORE &nbsp;·&nbsp; the headphones are for style: a fly hears with its antennae</div></div>
     <div class="card" id="info"></div>
     <div class="card"><div class="kicker" style="font-size:13px">BODY · motor neurons of each part</div><div id="meters" style="margin-top:8px"></div></div>
     <div class="card note">

@@ -1,23 +1,17 @@
-<p align="center">
-  <img src="assets/chart_hero.png" alt="FLYBOARD — the music chart voted by a fruit fly brain" width="100%">
-</p>
-
 <h1 align="center">🪰 FLYBOARD</h1>
 <p align="center"><b>The music chart voted by a fruit fly brain.</b><br>
 84 songs · 165,122 simulated neurons · 90 million synapses · 0 humans consulted</p>
 
 <p align="center">
-  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 Open the 3D viewer</b></a> — rotate the fly's whole nervous system, pick a song, watch it light up and the fly react
-  &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 Interactive charts</b></a>
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><img src="assets/flyboard_countdown.gif" alt="FLYBOARD countdown: brain in 3D and the fly reacting" width="100%"></a><br>
+  <sub><b>Left</b> the song's brain-painted cover · <b>Middle</b> the fly's whole nervous system in 3D, every dot a neuron
+  lighting up as it fires · <b>Right</b> the fly's body, moved by its own simulated motor neurons (the headphones are for style).<br>
+  <a href="docs/flyboard_countdown.mp4">🔊 full video</a> (soundtrack: a synthetic fruit-fly love song)</sub>
 </p>
 
-<p align="center"><a href="https://sukoji.github.io/flyboard/viewer.html"><img src="assets/viewer.png" alt="FLYBOARD 3D viewer" width="100%"></a></p>
-
 <p align="center">
-  <img src="assets/flyboard_countdown.gif" alt="countdown" width="100%"><br>
-  <sub><b>Left</b> the song's brain-painted cover · <b>Middle</b> the fly's whole nervous system in 3D, every dot a neuron,
-  lighting up as it fires · <b>Right</b> the fly's body, moved by its own simulated motor neurons.<br>
-  🔊 Full video with sound (a synthetic fruit-fly love song): <a href="docs/flyboard_countdown.mp4">flyboard_countdown.mp4</a></sub>
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 Open the 3D viewer</b></a> — rotate the whole nervous system, pick any of the 84 songs, replay real spikes
+  &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 Interactive charts</b></a>
 </p>
 
 On September 3, 2026, Google Research and HHMI Janelia published the complete wiring diagram of a male fruit fly's
@@ -46,8 +40,6 @@ KOREA's top three (Super Shy 20.9, I Know 20.8, Butter 20.6) are within each oth
 
 ## 📊 The charts
 
-<p align="center"><img src="assets/chart_all.png" alt="FLYBOARD ALL-TIME top 10" width="100%"></p>
-
 <details open><summary><b>🟡 FLYBOARD HOT 30 — Songs of the Century</b></summary>
 <p align="center"><img src="assets/chart_global.png" alt="FLYBOARD HOT 30" width="100%"></p>
 </details>
@@ -60,10 +52,9 @@ KOREA's top three (Super Shy 20.9, I Know 20.8, Butter 20.6) are within each oth
 <p align="center"><img src="assets/chart_korea.png" alt="FLYBOARD KOREA" width="100%"></p>
 </details>
 
-**Album art:** every cover is painted by the fly. Each dot is a real neuron at its real position in the nervous system
-(top view: optic lobes left and right, central brain in the middle, ventral nerve cord at the bottom). Brightness is how
-hard it fired during the song, colour is how much *more* it fired for this song than for the average song. No
-copyrighted artwork was harmed.
+**Album art** is painted by the fly: every dot is a real neuron at its real position (top view), brightness is how hard
+it fired for the song, colour how much *more* than for the average song; the ring is the sound reaching its ears over
+the 30 s. No copyrighted artwork was harmed. The combined ALL-TIME ranking is in the [viewer](https://sukoji.github.io/flyboard/viewer.html).
 
 ## 🧠 How the fly listens
 
@@ -97,7 +88,7 @@ As objective as a simulated fly can be. Here are the rules, including the one we
 |---|---|
 | **Scale** | `FLY SCORE = 100 × (sim − sim_noise) / (1 − sim_noise)`, where `sim` is the cosine similarity between the brain-wide response to the song and the response to fly courtship song (log firing rates, ear neurons excluded). **0 = white noise, 100 = the exact brain response to fly love song.** |
 | **Repetition** | Every song was played to the brain in **4 independent listening sessions** (different random input spikes). The chart shows the **median** listen and its spread (median absolute deviation). The reference is the per-neuron median over 4 listens to fly song. |
-| **Why median** | Now and then the model falls into a self-sustained state for part of a listen: an abdominal + flight motor circuit in the nerve cord latches on (see [What the fly's body does](#-what-the-flys-body-does)). One such burst landed in a reference listen and, with a mean, inflated a few songs to 40+. A median ignores single freak listens. We switched to the median *after* seeing that, and say so here so you can judge; the per-session scores are all in [`results/scores.csv`](results/scores.csv). |
+| **Why median** | A motor circuit in the nerve cord sometimes latches on during a listen ([below](#-what-the-flys-body-does)). Once it hit a reference listen and, with a mean, inflated a few songs to 40+. We switched to the median *after* seeing that, and say so here so you can judge; per-session scores are in [`results/scores.csv`](results/scores.csv). |
 | **Controls** | Each session also plays white noise, a 440 Hz tone, a metronome and a *second, independently generated* fly courtship song. Another fly's song scores **99.9** in every session, the metronome **83.3**, the tone **−18.5**. The scale does what it says. |
 | **Robustness** | Rank correlation between independent sessions: Spearman **ρ = 0.87**. Re-running the whole chart with weaker synapses (w_syn 0.10 mV): **ρ = 0.89**, 7 of the top 10 unchanged. Without ear adaptation: **ρ = 0.80**, 5 of 10. Median spread of a song across listens: **±0.34** points. |
 | **Same volume** | Every clip is loudness-normalized in the fly's hearing band, so mastering loudness does not win. |
@@ -135,14 +126,13 @@ simulation also tells us what the fly would *do*. Mean firing of each body part'
 and the flight motor has an off and an on state. Human songs switch it on within about 3 seconds in **334 of 336**
 listens (white noise: 4 of 4), and it then stays on at ~25 Hz, because this simplified model has no adaptation to
 switch it off again. Fly courtship song switched it on in **1 of 8** listens, and only late. It barely differs between
-songs, so it is shown in the video but not used for ranking. The same switch is the "random burst" that forced the
-median in the scoring. Nobody gets the fly to walk or to stick its tongue out.
+songs, so it is shown but not used for ranking. Nobody gets the fly to walk or to stick its tongue out.
 
-The fly (three.js, a male *D. melanogaster*: faceted red eyes, ocelli, feathery aristae, thoracic bristles, veined
-iridescent wings, halteres, segmented legs and the male's black abdominal tip) is a **puppet, not a physics
-simulation**: each part moves in proportion to the recorded activity of its own motor neurons (`subclass` fl/ml/hl legs, wm wings, ad abdomen, pm proboscis, nm neck,
-hm halteres, plus the giant fiber → TTMn for jumps), scaled so that the strongest response any song produced is full
-motion. Its antennae vibrate with the ear input.
+The fly is a male *D. melanogaster* in three.js (faceted eyes, ocelli, aristae, bristles, veined wings, halteres,
+segmented legs with the male's sex combs, black abdominal tip) and a **puppet, not a physics simulation**: each part
+moves with the recorded activity of its own motor neurons (MaleCNS `subclass` fl/ml/hl, wm, ad, pm, nm, hm; giant
+fiber → TTMn for jumps), scaled so the strongest response any song produced is full motion. ♪ rise with the sound
+reaching its ears, ♥ with the FLY SCORE. The headphones are pure style: a fly hears with its antennae.
 
 ## ✅ Sanity check: does the simulated fly still work like a fly?
 
@@ -160,8 +150,6 @@ drives the jump motor neuron (TTMn). Silence the giant fiber in the simulation a
   relays (AMMC/WED, aPN1, the giant fiber) but not to the courtship neurons (pC1, pC2l, pIP10). So the FLY SCORE is
   "how much the early auditory brain responds like it does to fly song", not "how aroused the fly got". We tried
   louder ears and background noise; neither fixed it without drowning the signal.
-- **What it mostly rewards** is low-frequency, pulsed energy in the 80-300 Hz band. That is an honest finding about
-  fly hearing, not a statement about music.
 - **30-second previews**, not full songs; the part of the song Apple chose to preview matters.
 - **Synaptic strength was re-tuned** (0.125 mV instead of 0.275 mV per synapse) because MaleCNS neurons carry ~1.4× more
   synapses than FlyWire's; with the original value ~20k neurons saturate.

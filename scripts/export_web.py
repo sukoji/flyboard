@@ -91,6 +91,7 @@ def main():
             "body": {k: round(float(min(1, v[i] / full[k])), 3) for k, v in chans.items()},
             "ring": np.round(ring, 3).tolist(), "offset": off, "n": int(len(idx)),
             "cover": f"covers/{sid}.png",
+            "listen": tracks.loc[sid, "itunes_url"] if sid in tracks.index else None,
         })
     (OUT / "rates.bin").write_bytes(bytes(blob))
     meta = {"n_somata": int(len(soma)), "n_neurons": int(len(nr)), "scale": 30000,
