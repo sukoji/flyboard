@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 3D 뷰어 열기</b></a> — 신경계 전체를 돌려 보고, 84곡 중 아무 곡이나 골라 실제 스파이크를 재생해 보세요
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 3D 뷰어 열기</b></a> — 신경계와 배선을 돌려 보고, 84곡 중 아무 곡이나 골라 들으며 실제 스파이크를 재생하고, 명령 뉴런을 켜 보세요
   &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 인터랙티브 차트</b></a>
 </p>
 
@@ -205,6 +205,9 @@ flowchart LR
   반응하는 정도"이지 "초파리가 얼마나 흥분했는가"가 아닙니다. 귀 입력을 키우거나 배경 잡음을 넣어 봤지만, 신호를
   묻어버리지 않고는 해결되지 않았습니다.
 - **30초 미리듣기**이지 곡 전체가 아닙니다. Apple이 미리듣기로 고른 구간이 결과에 영향을 줍니다.
+- **뷰어의 연결선은 세포체와 세포체를 이은 직선**이지 실제 축삭 경로가 아닙니다(실제 축삭은 신경망 속을 휘어 지나갑니다).
+  옅은 선은 커넥톰에서 시냅스가 가장 많은 연결 2만 개이고, 밝은 선은 선택한 곡이나 명령에서 켜진 뉴런 사이의 연결 중
+  시냅스 수 × 보내는 쪽 발화율이 큰 것들입니다.
 - **시냅스 세기를 다시 맞췄습니다**(시냅스당 0.275 mV 대신 0.125 mV). MaleCNS 뉴런은 FlyWire보다 시냅스가 약 1.4배
   많아서, 원래 값으로는 뉴런 약 2만 개가 포화됩니다.
 
@@ -229,6 +232,8 @@ python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # 3D 뷰어용 압축 바이너리 (docs/data/)
 python scripts/export_replay.py            # 하이라이트 5곡의 스파이크를 프레임 단위로
 python scripts/export_commands.py          # 명령 모드: 명령 뉴런을 켜고 스파이크 + 운동뉴런 기록
+python scripts/export_wires.py             # 연결선: 배경 배선 + 곡·명령별 활성 경로
+python scripts/fetch_preview_urls.py       # 뷰어용 Apple 미리듣기 주소 (저장하지 않고 스트리밍) + 합성 대조군 소리
 python scripts/render_web_video.py         # three.js 페이지를 헤드리스 Chrome으로 캡처해 카운트다운 영상 생성
 ```
 
@@ -245,6 +250,7 @@ python scripts/render_web_video.py         # three.js 페이지를 헤드리스 
   of the *Drosophila* male central nervous system", *Cell* (2026). CC-BY 4.0. 실행 시 다운로드하며 재배포하지 않습니다.
 - 뇌 모델: Shiu et al., "A *Drosophila* computational brain model reveals sensorimotor processing", *Nature* (2024)를 따랐습니다.
 - 곡 오디오: iTunes Search API의 30초 미리듣기를 로컬 분석에만 사용했습니다. **이 저장소에는 오디오가 포함되지
-  않습니다.** 곡명과 계산된 수치만 공개합니다.
+  않습니다.** 곡명과 계산된 수치만 공개합니다. 3D 뷰어는 Apple 공식 미리듣기를 Apple 서버에서 바로 재생하며, 곡마다
+  Apple Music 링크를 함께 둡니다. 대조군 소리는 직접 합성한 것입니다.
 - 패러디 차트입니다. Billboard와 무관하며 제휴·승인 관계가 없습니다. 이름에 대해 초파리의 의견은 묻지 않았습니다.
 - 코드: MIT.

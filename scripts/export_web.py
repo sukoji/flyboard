@@ -70,6 +70,8 @@ def main():
     ctrl_audio = {k: v[2] for k, v in controls().items()}
 
     axes = pd.read_csv(ROOT / "results" / "axes.csv", index_col="id") if (ROOT / "results" / "axes.csv").exists() else None
+    pv = ROOT / "results" / "preview_urls.json"      # Apple preview URLs (streamed from Apple, never hosted here)
+    previews = json.loads(pv.read_text()) if pv.exists() else {}
     AX = ["love", "flybuzz", "danger", "startle", "arousal"]
     blob, songs = bytearray(), []
     for i, sid in enumerate(ids):
@@ -94,6 +96,7 @@ def main():
             "ring": np.round(ring, 3).tolist(), "offset": off, "n": int(len(idx)),
             "cover": f"covers/{sid}.png",
             "listen": tracks.loc[sid, "itunes_url"] if sid in tracks.index else None,
+            "preview": f"data/audio/{sid}.mp3" if sid.startswith("ctrl_") else previews.get(sid),
             "axes": None if axes is None else {k: [float(axes.loc[sid, f"p_{k}"]),
                                                     None if pd.isna(axes.loc[sid, k]) else float(axes.loc[sid, k])] for k in AX},
         })

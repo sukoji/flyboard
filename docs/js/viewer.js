@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { BrainCloud, loadData, loadReplay } from "./brain.js";
+import { BrainCloud, Wires, loadData, loadReplay } from "./brain.js";
 import { Fly, flyStage } from "./fly.js";
 
 const COLORS = { global: "#f5c542", japan: "#ff4d6d", korea: "#4dabff", control: "#9ecbff" };
@@ -30,6 +30,16 @@ controls.autoRotate = true;
 controls.autoRotateSpeed = 0.6;
 const brain = new BrainCloud(data.somata, data.region, data.meta.scale);
 bScene.add(brain.points);
+// connections: a faint backbone of the strongest synapses + the pathway active for the current song / command
+const somaPos = brain.points.geometry.attributes.position.array;
+const backbone = new Wires(somaPos, 0x5a6aa0, 0.16, 0);
+backbone.set(data.backbone);
+const active = new Wires(somaPos, 0x4dabff, 0.32, 1.0);
+bScene.add(backbone.lines, active.lines);
+
+// sound: Apple's official 30 s previews are streamed from Apple (never hosted here); controls are our own synth
+const player = $("player");
+let soundOn = false;
 
 // region label anchors (centroids)
 const anchors = {};
@@ -121,6 +131,9 @@ function select(id, startReplay = false) {
   fly.setAccent(color);
   const d = data.song(current);
   brain.setSong(d.idx, d.rate, d.fp);
+  active.uniforms.uColor.value.set(color);
+  active.uniforms.uReplay.value = 0;
+  active.set(data.edges(current));
   mode = "avg";
   rp = null;
   cmd = null;
@@ -132,13 +145,39 @@ function select(id, startReplay = false) {
     <div class="scale"><i style="width:${Math.max(0, current.score)}%"></i><em style="left:${fly_ref}%">fly song</em></div>
     <div class="stats"><div><b>${current.lit}</b>neurons lit</div><div><b>${current.gf} Hz</b>giant fiber</div><div><b>${current.n}</b>active somata</div></div>
     <div class="eq" id="eq">${"<i></i>".repeat(28)}</div>
-    ${current.listen ? `<a class="listen" href="${current.listen}" target="_blank" rel="noopener">Listen on Apple Music ↗</a>` : ""}
+    ${current.listen ? `<a class="listen" href="${current.listen}" target="_blank" rel="noopener">Listen on Apple Music ↗</a>
+      <div class="credit">Preview courtesy of Apple Music, streamed from Apple.</div>` : ""}
     ${radar(current)}`;
   $("replay").disabled = !(id in replayIdx);
-  $("hud").innerHTML = `<b>${esc(current.title)}</b> · ${current.n.toLocaleString()} neurons active<br>each dot = one neuron at its real position · lit = driven by this song`;
+  $("hud").innerHTML = `<b>${esc(current.title)}</b> · ${current.n.toLocaleString()} neurons active<br>each dot = one neuron at its real position · lines = its ${active.pre.length.toLocaleString()} strongest active connections`;
   renderList();
   if (startReplay) startReplayMode();
+  else playSound();
 }
+
+function playSound() {
+  // plays the selected song's preview (from the replay window's start in replay mode); silent in command mode
+  if (!soundOn || mode === "command" || !current.preview) { player.pause(); return; }
+  if (player.dataset.id !== current.id) {
+    player.src = current.preview;
+    player.dataset.id = current.id;
+  }
+  player.loop = mode !== "replay";
+  if (mode === "replay") player.currentTime = replay.meta.segments[rp.seg].t0;
+  else if (player.currentTime > 29) player.currentTime = 0;
+  player.play().catch(() => {});
+}
+
+$("sound").onclick = () => {
+  soundOn = !soundOn;
+  $("sound").textContent = soundOn ? "🔊 Sound on" : "🔇 Sound off";
+  if (soundOn && !current.preview) toast("No preview available for this track");
+  playSound();
+};
+$("wire").onclick = () => {
+  backbone.lines.visible = active.lines.visible = !active.lines.visible;
+  $("wire").textContent = active.lines.visible ? "🕸 Wiring on" : "🕸 Wiring off";
+};
 
 function radar(s) {
   // five axes as percentiles among the 84 songs
@@ -168,6 +207,10 @@ function startCommand(k) {
   brain.setColor(CMD_COLOR);
   fly.setAccent(CMD_COLOR);
   brain.clearGlow();
+  active.uniforms.uColor.value.set(CMD_COLOR);
+  active.uniforms.uReplay.value = 1;
+  active.set(data.edges(c));
+  player.pause();
   const peaks = Object.entries(c.peak_hz).sort((a, b) => b[1] - a[1]).slice(0, 6)
     .map(([ch, hz]) => `<div><b>${hz} Hz</b>${ch}</div>`).join("");
   $("info").innerHTML = `
@@ -186,6 +229,8 @@ function startReplayMode() {
   rp = { seg: replayIdx[current.id], f: 0, acc: 0 };
   brain.clearGlow();
   mode = "replay";
+  active.uniforms.uReplay.value = 1;
+  playSound();
 }
 $("replay").onclick = startReplayMode;
 $("avg").onclick = () => select(current.id);   // back to the average blink of the selected song (also leaves command mode)
@@ -215,24 +260,43 @@ function bodyChannels() {
     return ch;
   }
   const b = current.body, ring = current.ring;
-  const r = ring[Math.floor((t * 4) % ring.length)];
+  const r = ring[Math.floor(ringPos()) % ring.length];
   return { ...b, wingL: b.wings, wingR: b.wings, ear: Math.min(1, 1.6 * (r[0] + r[1]) / 2), love: Math.max(0, current.score / 100) };
 }
+const playing = () => soundOn && !player.paused && player.readyState >= 2;
+const ringPos = () => (playing() && mode === "avg" ? player.currentTime : t) * 4;   // ear envelope follows the audio when it plays
+
+function stepReplay(seg) {
+  brain.setSpikes(replay.frame(rp.seg, rp.f));
+  const fs = replay.meta.frame_ms / 1000, before = seg.t0 + rp.f * fs;
+  if (seg.latch_s && before < seg.latch_s && before + fs >= seg.latch_s) toast("⚡ Motor latch ON: the abdomen and flight motor just switched on");
+  rp.f = (rp.f + 1) % seg.frames.length;
+  if (rp.f === 0) brain.clearGlow();
+}
+
 function tick() {
   const dt = Math.min(0.05, clock.getDelta());
   t += dt;
   brain.uniforms.uTime.value = t;
+  backbone.uniforms.uTime.value = active.uniforms.uTime.value = t;
   if (mode === "replay" && rp) {
-    rp.acc += dt;
-    const seg = replay.meta.segments[rp.seg];
-    while (rp.acc >= replay.meta.frame_ms / 1000) {
-      rp.acc -= replay.meta.frame_ms / 1000;
-      brain.setSpikes(replay.frame(rp.seg, rp.f));
-      const before = seg.t0 + rp.f * replay.meta.frame_ms / 1000;
-      if (seg.latch_s && before < seg.latch_s && before + replay.meta.frame_ms / 1000 >= seg.latch_s) toast("⚡ Motor latch ON: the abdomen and flight motor just switched on");
-      rp.f = (rp.f + 1) % seg.frames.length;
-      if (rp.f === 0) brain.clearGlow();
+    const seg = replay.meta.segments[rp.seg], fs = replay.meta.frame_ms / 1000;
+    if (playing()) {
+      // lock the spikes to the audio clock: the simulated listen started at t0 of this very preview
+      const target = Math.floor((player.currentTime - seg.t0) / fs);
+      if (target < 0 || target >= seg.frames.length) {
+        player.currentTime = seg.t0;
+        rp.f = 0;
+        brain.clearGlow();
+      } else {
+        let guard = 0;
+        while (rp.f < target && guard++ < 10) stepReplay(seg);
+      }
+    } else {
+      rp.acc += dt;
+      while (rp.acc >= fs) { rp.acc -= fs; stepReplay(seg); }
     }
+    active.follow(brain.glow.array);
     const tt = seg.t0 + rp.f * replay.meta.frame_ms / 1000;
     $("clock").textContent = `replay · listen t = ${tt.toFixed(1)} s${seg.latch_s ? ` · motor latch at ${seg.latch_s.toFixed(1)} s` : ""}`;
     $("hud").innerHTML = `<b>${esc(current.title)}</b> · real spikes, one simulated listen<br>${replay.frame(rp.seg, rp.f).length} neurons firing in this 40 ms frame`;
@@ -245,6 +309,7 @@ function tick() {
       cmd.f = (cmd.f + 1) % c.frames.length;
       if (cmd.f === 0) { brain.clearGlow(); cmd.toasted = false; }
     }
+    active.follow(brain.glow.array);
     const tt = cmd.f * fs, on = tt >= c.on[0] && tt < c.on[1];
     if (on && !cmd.toasted) { toast(`🧪 ${c.label}: switching ON ${c.n_neurons} neuron${c.n_neurons > 1 ? "s" : ""}`); cmd.toasted = true; }
     $("clock").textContent = `command · t = ${tt.toFixed(1)} s · ${on ? "ON" : "off"}`;
@@ -258,7 +323,7 @@ function tick() {
   $("mood").textContent = mood(ch);
   const eq = $("eq");
   if (eq) {
-    const ring = current.ring, pos = (t * 4) % ring.length;
+    const ring = current.ring, pos = ringPos() % ring.length;
     [...eq.children].forEach((bar, i) => {
       const r = ring[Math.floor(pos + i) % ring.length], wob = 0.75 + 0.25 * Math.sin(t * 9 + i * 1.3);
       bar.style.height = `${Math.round(4 + 34 * Math.min(1, 1.3 * (r[0] + r[1]) * wob))}px`;

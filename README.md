@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 Open the 3D viewer</b></a> — rotate the whole nervous system, pick any of the 84 songs, replay real spikes
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 Open the 3D viewer</b></a> — rotate the whole nervous system and its wiring, pick any of the 84 songs and hear it, replay real spikes, switch on command neurons
   &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 Interactive charts</b></a>
 </p>
 
@@ -211,6 +211,9 @@ drives the jump motor neuron (TTMn). Silence the giant fiber in the simulation a
   "how much the early auditory brain responds like it does to fly song", not "how aroused the fly got". We tried
   louder ears and background noise; neither fixed it without drowning the signal.
 - **30-second previews**, not full songs; the part of the song Apple chose to preview matters.
+- **Lines in the viewer are straight soma-to-soma links**, not axon paths (real axons wind through the neuropil). A faint
+  backbone shows the connectome's 20,000 strongest connections; the bright lines are the strongest connections between
+  neurons active for the selected song or command, ranked by synapses × presynaptic firing.
 - **Synaptic strength was re-tuned** (0.125 mV instead of 0.275 mV per synapse) because MaleCNS neurons carry ~1.4× more
   synapses than FlyWire's; with the original value ~20k neurons saturate.
 
@@ -235,6 +238,8 @@ python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # compact binaries for the 3D viewer (docs/data/)
 python scripts/export_replay.py            # spikes of the 5 highlighted listens, frame by frame
 python scripts/export_commands.py          # command mode: switch on command neurons, record spikes + motor neurons
+python scripts/export_wires.py             # connection lines: backbone + active pathway per song / command
+python scripts/fetch_preview_urls.py       # Apple preview URLs for the viewer (streamed, not stored) + synthetic control audio
 python scripts/render_web_video.py         # countdown video, rendered from the three.js page with headless Chrome
 ```
 
@@ -251,6 +256,7 @@ The browser side is in `docs/js/`: `brain.js` (point-cloud shader), `fly.js` (th
   of the *Drosophila* male central nervous system", *Cell* (2026). CC-BY 4.0. Downloaded at runtime, not redistributed.
 - Brain model after Shiu et al., "A *Drosophila* computational brain model reveals sensorimotor processing", *Nature* (2024).
 - Song audio: 30-second previews from the iTunes Search API, used locally for analysis only. **No audio is included in
-  this repository**; only song titles and derived numbers are published.
+  this repository**; only song titles and derived numbers are published. The 3D viewer plays Apple's official previews
+  streamed directly from Apple, next to a link to each song on Apple Music; the control sounds are our own synthesis.
 - Parody chart. Not affiliated with, endorsed by, or connected to Billboard. The fly was not consulted about the name.
 - Code: MIT.

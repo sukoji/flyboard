@@ -1,7 +1,7 @@
 // Deterministic frame renderer for the countdown video. The capture script calls renderAt(0), renderAt(1), ...
 // in order and screenshots each frame (25 fps).
 import * as THREE from "three";
-import { BrainCloud, loadData, loadReplay } from "./brain.js";
+import { BrainCloud, Wires, loadData, loadReplay } from "./brain.js";
 import { Fly, flyStage } from "./fly.js";
 
 const FPS = 25, CARD = 3 * FPS;
@@ -24,6 +24,13 @@ const brain = new BrainCloud(data.somata, data.region, data.meta.scale);
 brain.uniforms.uPix.value = 960;
 brain.uniforms.uSize.value = 0.011;
 bScene.add(brain.points);
+const somaPos = brain.points.geometry.attributes.position.array;
+const backbone = new Wires(somaPos, 0x5a6aa0, 0.16, 0);
+backbone.set(data.backbone);
+const active = new Wires(somaPos, 0x4dabff, 0.32, 1.0);
+active.uniforms.uReplay.value = 1;
+bScene.add(backbone.lines, active.lines);
+const songById = Object.fromEntries(data.meta.songs.map((s) => [s.id, s]));
 
 const fR = new THREE.WebGLRenderer({ canvas: $("fly"), antialias: true, preserveDrawingBuffer: true });
 fR.setSize(560, 520, false);
@@ -60,11 +67,13 @@ let lastSeg = -1;
 window.renderAt = (i) => {
   const t = i / FPS;
   brain.uniforms.uTime.value = t;
+  backbone.uniforms.uTime.value = active.uniforms.uTime.value = t;
   view(t);
   if (i < CARD || i >= total - CARD) {
     brain.setColor("#c77dff");
     brain.uniforms.uMode.value = 1;
     brain.clearGlow();
+    active.lines.visible = false;
     card(i < CARD
       ? `<h1>🪰 FLYBOARD</h1><p>We played 84 songs to a simulated fruit fly.</p><small>Every neuron of its brain and nerve cord. Every twitch of its body.</small>`
       : `<h1>🪰 FLYBOARD</h1><p>Full charts · HOT 30 · JAPAN · KOREA</p><small class="url">sukoji.github.io/flyboard</small>`);
@@ -83,6 +92,9 @@ window.renderAt = (i) => {
     document.documentElement.style.setProperty("--acc", color);
     brain.setColor(color);
     brain.clearGlow();
+    active.uniforms.uColor.value.set(color);
+    active.set(data.edges(songById[s.id]));
+    active.lines.visible = true;
     fScene.remove(fly.group);
     fly = new Fly();
     fly.setAccent(color);
@@ -95,6 +107,7 @@ window.renderAt = (i) => {
   }
   const spikes = replay.frame(k, f);
   brain.setSpikes(spikes);
+  active.follow(brain.glow.array);
   const prog = Math.min(1, f / (0.6 * segLen));
   const shown = s.score * (1 - (1 - prog) ** 3);
   $("score").textContent = shown.toFixed(1);

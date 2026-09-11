@@ -39,7 +39,8 @@
   .label { position: absolute; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: #aab3cc; pointer-events: none; text-shadow: 0 1px 6px #000; transform: translate(-50%, -50%); }
   .hud { position: absolute; left: 18px; top: 14px; color: var(--muted); font-size: 12.5px; line-height: 1.6; pointer-events: none; }
   .hud b { color: var(--ink); }
-  .controls { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 8px; }
+  .controls { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: max-content; max-width: 96%; }
+  .credit { color: var(--muted); font-size: 10.5px; margin-top: 6px; }
   .controls button { font: 800 13px Inter, sans-serif; color: var(--bg); background: var(--ink); border: 0; padding: 10px 16px; border-radius: 99px; cursor: pointer; }
   .controls button.ghost { background: #151a29; color: var(--ink); border: 1px solid #2a3044; }
   .controls button:disabled { opacity: .35; cursor: default; }
@@ -134,7 +135,10 @@
     <div class="controls">
       <button id="replay">▶ Replay real spikes</button>
       <button id="avg" class="ghost">Average blink</button>
+      <button id="sound" class="ghost">🔇 Sound off</button>
+      <button id="wire" class="ghost">🕸 Wiring on</button>
     </div>
+    <audio id="player" preload="none"></audio>
   </div>
   <section class="right">
     <div class="flycap"><canvas id="fly"></canvas><div class="mood" id="mood"></div>

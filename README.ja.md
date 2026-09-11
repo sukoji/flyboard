@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 3Dビューアを開く</b></a> — 神経系全体を回転させ、84曲から選んで実際のスパイクを再生できます
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 3Dビューアを開く</b></a> — 神経系と配線を回転させ、84曲から選んで聴きながら実際のスパイクを再生し、コマンドニューロンをオンにできます
   &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 インタラクティブチャート</b></a>
 </p>
 
@@ -206,6 +206,9 @@ giant fiber → TTMn）。どの曲でもいちばん強い反応が最大の動
   反応する度合い」であって、「ハエがどれだけ興奮したか」ではありません。耳の入力を強めたり背景ノイズを加えたりしましたが、
   信号を埋もれさせずに解決はできませんでした。
 - **30秒のプレビュー**で、曲全体ではありません。Appleがプレビューに選んだ部分が結果に影響します。
+- **ビューアの線は細胞体と細胞体を結んだ直線**で、実際の軸索の経路ではありません（本物の軸索は神経網の中を曲がりくねって
+  通ります）。薄い線はコネクトームでシナプスがいちばん多い2万本の結合、明るい線は選んだ曲やコマンドで活動したニューロン間の
+  結合のうち、シナプス数 × 送り手の発火率が大きいものです。
 - **シナプスの強さを調整し直しています**（1シナプスあたり0.275 mVではなく0.125 mV）。MaleCNSのニューロンはFlyWireより
   シナプスが約1.4倍多く、元の値では約2万個のニューロンが飽和します。
 
@@ -230,6 +233,8 @@ python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # 3Dビューア用のコンパクトなバイナリ (docs/data/)
 python scripts/export_replay.py            # ハイライト5曲のスパイクをフレームごとに
 python scripts/export_commands.py          # コマンドモード：コマンドニューロンをオンにしてスパイク + 運動ニューロンを記録
+python scripts/export_wires.py             # 結合の線：背景の配線 + 曲・コマンドごとの活動経路
+python scripts/fetch_preview_urls.py       # ビューア用のAppleプレビューURL (保存せずストリーミング) + 合成した対照の音
 python scripts/render_web_video.py         # three.jsのページをヘッドレスChromeでキャプチャしてカウントダウン動画を作成
 ```
 
@@ -246,6 +251,7 @@ python scripts/render_web_video.py         # three.jsのページをヘッドレ
   of the *Drosophila* male central nervous system"、*Cell*（2026）。CC-BY 4.0。実行時にダウンロードし、再配布はしていません。
 - 脳モデル：Shiu et al.、"A *Drosophila* computational brain model reveals sensorimotor processing"、*Nature*（2024）に準拠。
 - 曲の音声：iTunes Search APIの30秒プレビューをローカルでの解析にのみ使用しました。**このリポジトリに音声は含まれて
-  いません。** 曲名と計算した数値のみを公開しています。
+  いません。** 曲名と計算した数値のみを公開しています。3DビューアはAppleの公式プレビューをAppleのサーバーから直接再生し、
+  曲ごとにApple Musicへのリンクを置いています。対照の音は自前で合成したものです。
 - パロディのチャートです。Billboardとは無関係で、提携・承認を受けたものではありません。名前についてハエの意見は聞いていません。
 - コード：MIT。

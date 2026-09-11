@@ -101,19 +101,103 @@ export class BrainCloud {
   }
 }
 
+// Connections, drawn soma to soma as straight lines (real axons wind through the neuropil).
+// A bright dot travels from the presynaptic to the postsynaptic end; in replay mode a line lights up
+// when its presynaptic neuron has just fired.
+const WVERT = /* glsl */ `
+  attribute float strength;
+  attribute float along;
+  attribute float seed;
+  attribute float act;
+  varying float vS, vT, vSeed, vAct;
+  void main() {
+    vS = strength; vT = along; vSeed = seed; vAct = act;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }`;
+const WFRAG = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uTime, uBase, uFlow, uReplay, uFade;
+  varying float vS, vT, vSeed, vAct;
+  void main() {
+    float head = fract(uTime * 0.55 + vSeed);
+    float pulse = exp(-pow((vT - head) * 7.0, 2.0));
+    float a = (uBase + uFlow * pulse) * vS;
+    if (uReplay > 0.5) a = (0.35 * uBase + vAct * (0.5 + pulse)) * vS;
+    a *= uFade;
+    gl_FragColor = vec4(uColor * a, a);
+  }`;
+
+export class Wires {
+  constructor(positions, color, base, flow) {
+    this.pos = positions;
+    this.uniforms = {
+      uTime: { value: 0 }, uColor: { value: new THREE.Color(color) }, uBase: { value: base }, uFlow: { value: flow },
+      uReplay: { value: 0 }, uFade: { value: 1 },
+    };
+    this.lines = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.ShaderMaterial({
+      vertexShader: WVERT, fragmentShader: WFRAG, uniforms: this.uniforms,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    this.lines.frustumCulled = false;
+    this.pre = new Uint32Array(0);
+  }
+
+  set({ pre, post, s }) {
+    const n = pre.length, P = this.pos;
+    const pos = new Float32Array(n * 6), str = new Float32Array(n * 2), along = new Float32Array(n * 2), seed = new Float32Array(n * 2);
+    for (let e = 0; e < n; e++) {
+      for (let k = 0; k < 3; k++) {
+        pos[e * 6 + k] = P[pre[e] * 3 + k];
+        pos[e * 6 + 3 + k] = P[post[e] * 3 + k];
+      }
+      str[e * 2] = str[e * 2 + 1] = 0.25 + 0.75 * s[e] / 255;
+      along[e * 2 + 1] = 1;
+      seed[e * 2] = seed[e * 2 + 1] = Math.random();
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    g.setAttribute("strength", new THREE.BufferAttribute(str, 1));
+    g.setAttribute("along", new THREE.BufferAttribute(along, 1));
+    g.setAttribute("seed", new THREE.BufferAttribute(seed, 1));
+    g.setAttribute("act", new THREE.BufferAttribute(new Float32Array(n * 2), 1));
+    this.lines.geometry.dispose();
+    this.lines.geometry = g;
+    this.pre = pre;
+  }
+
+  follow(glow) {
+    // replay: light each line by its presynaptic neuron's afterglow
+    const a = this.lines.geometry.getAttribute("act");
+    if (!a) return;
+    for (let e = 0; e < this.pre.length; e++) a.array[e * 2] = a.array[e * 2 + 1] = Math.min(1, 0.6 * glow[this.pre[e]]);
+    a.needsUpdate = true;
+  }
+}
+
+const edgeView = (buf, off, n) => ({
+  pre: new Uint32Array(buf, off, n), post: new Uint32Array(buf, off + 4 * n, n), s: new Uint8Array(buf, off + 8 * n, n),
+});
+
 export async function loadData(base = "data/") {
-  const [meta, somata, region, rates] = await Promise.all([
+  const [meta, somata, region, rates, wires, songwires] = await Promise.all([
     fetch(base + "songs.json").then((r) => r.json()),
     fetch(base + "somata.bin").then((r) => r.arrayBuffer()),
     fetch(base + "region.bin").then((r) => r.arrayBuffer()),
     fetch(base + "rates.bin").then((r) => r.arrayBuffer()),
+    fetch(base + "wires.bin").then((r) => r.arrayBuffer()),
+    fetch(base + "songwires.bin").then((r) => r.arrayBuffer()),
   ]);
   const song = (s) => ({
     idx: new Uint32Array(rates, s.offset, s.n),
     rate: new Uint8Array(rates, s.offset + 4 * s.n, s.n),
     fp: new Uint8Array(rates, s.offset + 5 * s.n, s.n),
   });
-  return { meta, somata: new Int16Array(somata), region: new Uint8Array(region), song };
+  const nb = Math.floor(wires.byteLength / 9);
+  return {
+    meta, somata: new Int16Array(somata), region: new Uint8Array(region), song,
+    backbone: edgeView(wires, 0, nb),
+    edges: (item) => edgeView(songwires, item.woff, item.wn),   // a song or a command
+  };
 }
 
 export async function loadReplay(base = "data/", name = "replay") {
