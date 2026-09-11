@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLYBOARD 3D — a fruit fly brain listening to music</title>
+<meta name="description" content="Pick a song and watch a simulated male fruit fly's whole nervous system (140k neurons) and body react.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@500;800&family=Noto+Sans+KR:wght@500;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#07080d; --panel:#0f121b; --line:#1c2130; --ink:#f3f4f8; --muted:#8a90a3; --acc:#4dabff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: Inter, 'Noto Sans JP', 'Noto Sans KR', sans-serif; overflow: hidden; }
+  header { height: 64px; display: flex; align-items: center; gap: 18px; padding: 0 22px; border-bottom: 1px solid var(--line); }
+  header .logo { font-family: Anton, Impact, sans-serif; font-size: 34px; letter-spacing: .5px; }
+  header .logo span { color: var(--acc); transition: color .3s; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header a { margin-left: auto; color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 700; border: 1px solid #2a3044; padding: 7px 12px; border-radius: 99px; }
+  header a + a { margin-left: 8px; }
+  main { display: grid; grid-template-columns: 330px 1fr 430px; height: calc(100% - 64px); }
+  aside { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .tabs { display: flex; gap: 6px; padding: 12px; flex-wrap: wrap; }
+  .tabs button { font: 800 12px Inter, sans-serif; color: #cfd3e0; background: #141826; border: 1px solid #262c3e; padding: 7px 11px; border-radius: 99px; cursor: pointer; }
+  .tabs button.on { background: var(--ink); color: var(--bg); }
+  .list { overflow-y: auto; flex: 1; }
+  .song { display: grid; grid-template-columns: 30px 44px 1fr auto; gap: 10px; align-items: center; padding: 7px 12px; cursor: pointer; border-left: 3px solid transparent; }
+  .song:hover { background: #121623; }
+  .song.on { background: #151a29; border-left-color: var(--acc); }
+  .song .rk { font-family: Anton, Impact, sans-serif; font-size: 18px; text-align: center; color: #cfd3e0; }
+  .song img { width: 44px; height: 44px; border-radius: 8px; }
+  .song .t { font-weight: 800; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .song .a { color: var(--muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .song .s { font-family: Anton, Impact, sans-serif; font-size: 18px; }
+  .song .rp { font-size: 10px; color: #ffcf5a; }
+  #brainWrap { position: relative; min-width: 0; }
+  #brain { width: 100%; height: 100%; display: block; }
+  .label { position: absolute; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: #aab3cc; pointer-events: none; text-shadow: 0 1px 6px #000; transform: translate(-50%, -50%); }
+  .hud { position: absolute; left: 18px; top: 14px; color: var(--muted); font-size: 12.5px; line-height: 1.6; pointer-events: none; }
+  .hud b { color: var(--ink); }
+  .controls { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 8px; }
+  .controls button { font: 800 13px Inter, sans-serif; color: var(--bg); background: var(--ink); border: 0; padding: 10px 16px; border-radius: 99px; cursor: pointer; }
+  .controls button.ghost { background: #151a29; color: var(--ink); border: 1px solid #2a3044; }
+  .controls button:disabled { opacity: .35; cursor: default; }
+  #clock { position: absolute; right: 18px; top: 14px; font: 12px ui-monospace, monospace; color: var(--muted); }
+  section.right { border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; overflow-y: auto; }
+  #fly { width: 100%; height: 340px; display: block; }
+  .card { padding: 16px 20px; border-top: 1px solid var(--line); }
+  .kicker { font-family: Anton, Impact, sans-serif; font-size: 16px; color: var(--acc); letter-spacing: .5px; }
+  .title { font-weight: 800; font-size: 24px; margin-top: 2px; line-height: 1.2; }
+  .artist { color: var(--muted); font-size: 14px; margin-top: 3px; }
+  .score { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+  .score b { font-family: Anton, Impact, sans-serif; font-size: 54px; font-weight: 400; color: var(--acc); line-height: 1; }
+  .score span { color: var(--muted); font-size: 12px; }
+  .scale { position: relative; height: 8px; background: #1a1f2d; border-radius: 99px; margin-top: 10px; }
+  .scale i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--acc); border-radius: 99px; }
+  .scale em { position: absolute; top: -18px; font-style: normal; font-size: 10px; color: #9ecbff; transform: translateX(-50%); }
+  .scale em::after { content: '▼'; display: block; text-align: center; font-size: 8px; }
+  .stats { display: flex; gap: 16px; margin-top: 14px; color: var(--muted); font-size: 12px; }
+  .stats b { display: block; color: var(--ink); font-size: 16px; }
+  .meter { display: grid; grid-template-columns: 90px 1fr 120px; align-items: center; gap: 10px; margin: 7px 0; font-size: 12px; }
+  .meter .n { font-weight: 800; }
+  .meter .bar { height: 8px; background: #1a1f2d; border-radius: 99px; overflow: hidden; }
+  .meter .bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .15s; }
+  .meter .src { color: var(--muted); font-size: 10.5px; }
+  .note { color: var(--muted); font-size: 11.5px; line-height: 1.55; }
+  #loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 9; font-family: Anton, Impact, sans-serif; font-size: 28px; }
+  @media (max-width: 1100px) {
+    html, body { overflow: auto; }
+    main { grid-template-columns: 1fr; height: auto; }
+    aside { height: 320px; border-right: 0; }
+    #brainWrap { height: 70vh; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="loading">🪰 loading 140,024 neurons…</div>
+<header>
+  <div class="logo">🪰 FLYBOARD <span>3D</span></div>
+  <div class="sub">A simulated male fruit fly's whole nervous system, listening. Drag to rotate, scroll to zoom.</div>
+  <a href="./">Charts</a><a href="https://github.com/sukoji/flyboard">GitHub</a>
+</header>
+<main>
+  <aside>
+    <div class="tabs" id="tabs"></div>
+    <div class="list" id="list"></div>
+  </aside>
+  <div id="brainWrap">
+    <canvas id="brain"></canvas>
+    <div class="hud" id="hud"></div>
+    <div id="clock"></div>
+    <div class="label" data-r="0">CENTRAL BRAIN</div>
+    <div class="label" data-r="1a">OPTIC LOBE</div>
+    <div class="label" data-r="1b">OPTIC LOBE</div>
+    <div class="label" data-r="2">NERVE CORD</div>
+    <div class="controls">
+      <button id="replay">▶ Replay real spikes</button>
+      <button id="avg" class="ghost">Average blink</button>
+    </div>
+  </div>
+  <section class="right">
+    <canvas id="fly"></canvas>
+    <div class="card" id="info"></div>
+    <div class="card"><div class="kicker" style="font-size:13px">BODY · motor neurons of each part</div><div id="meters" style="margin-top:8px"></div></div>
+    <div class="card note">
+      Every dot is a real neuron at its real position (MaleCNS v1.0 connectome, Janelia/Google, CC-BY 4.0).
+      <b>Average blink</b>: each neuron flashes at the mean rate it fired for this song in the simulation.
+      <b>Replay real spikes</b> (5 highlighted songs): the exact spikes of one simulated listen, frame by frame.
+      The fly is a puppet: each body part moves with the activity of its own motor neurons. Not a real fly's opinion.
+    </div>
+  </section>
+</main>
+<script type="module" src="js/viewer.js"></script>
+</body>
+</html>

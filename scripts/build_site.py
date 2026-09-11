@@ -204,11 +204,12 @@ def main():
 nav { position:sticky; top:0; z-index:9; display:flex; gap:8px; justify-content:center; padding:14px; background:#07080dcc; backdrop-filter:blur(10px); border-bottom:1px solid #1d2230; }
 nav button { font:800 14px Inter,sans-serif; color:#cfd3e0; background:#141826; border:1px solid #262c3e; padding:9px 16px; border-radius:99px; cursor:pointer; }
 nav button.on { background:#f4f5f8; color:#07080d; }
+nav a.cta { font:800 14px Inter,sans-serif; color:#07080d; background:#c77dff; padding:9px 16px; border-radius:99px; text-decoration:none; margin-left:12px; }
 .wrap { display:flex; flex-direction:column; align-items:center; }
 video { width:1200px; max-width:100%; border-radius:16px; margin:28px 0 8px; border:1px solid #1d2230; }
 """
     video = '<video src="flyboard_countdown.mp4" controls muted loop playsinline></video>' if (DOCS / "flyboard_countdown.mp4").exists() else ""
-    site = page(f"""<nav>{tabs}</nav><div class="wrap">{pages['hero'].replace('../covers', 'covers')}{video}{secs}</div>
+    site = page(f"""<nav>{tabs}<a class="cta" href="viewer.html">🪰 3D VIEWER →</a></nav><div class="wrap">{pages['hero'].replace('../covers', 'covers')}{video}{secs}</div>
 <script>function show(k){{document.querySelectorAll('.tab').forEach(e=>e.style.display='none');document.getElementById('t-'+k).style.display='block';
 document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById('b-'+k).classList.add('on');}}show('all');</script>""",
                 site_css)

@@ -7,6 +7,13 @@
 84 songs · 165,122 simulated neurons · 90 million synapses · 0 humans consulted</p>
 
 <p align="center">
+  <a href="https://sukoji.github.io/flyboard/viewer.html"><b>🧠 Open the 3D viewer</b></a> — rotate the fly's whole nervous system, pick a song, watch it light up and the fly react
+  &nbsp;·&nbsp; <a href="https://sukoji.github.io/flyboard/"><b>📊 Interactive charts</b></a>
+</p>
+
+<p align="center"><a href="https://sukoji.github.io/flyboard/viewer.html"><img src="assets/viewer.png" alt="FLYBOARD 3D viewer" width="100%"></a></p>
+
+<p align="center">
   <img src="assets/flyboard_countdown.gif" alt="countdown" width="100%"><br>
   <sub><b>Left</b> the song's brain-painted cover · <b>Middle</b> the fly's whole nervous system in 3D, every dot a neuron,
   lighting up as it fires · <b>Right</b> the fly's body, moved by its own simulated motor neurons.<br>
@@ -131,8 +138,9 @@ switch it off again. Fly courtship song switched it on in **1 of 8** listens, an
 songs, so it is shown in the video but not used for ranking. The same switch is the "random burst" that forced the
 median in the scoring. Nobody gets the fly to walk or to stick its tongue out.
 
-The fly on the right of the video is a **puppet, not a physics simulation**: each part moves in proportion to the
-recorded activity of its own motor neurons (`subclass` fl/ml/hl legs, wm wings, ad abdomen, pm proboscis, nm neck,
+The fly (three.js, a male *D. melanogaster*: faceted red eyes, ocelli, feathery aristae, thoracic bristles, veined
+iridescent wings, halteres, segmented legs and the male's black abdominal tip) is a **puppet, not a physics
+simulation**: each part moves in proportion to the recorded activity of its own motor neurons (`subclass` fl/ml/hl legs, wm wings, ad abdomen, pm proboscis, nm neck,
 hm halteres, plus the giant fiber → TTMn for jumps), scaled so that the strongest response any song produced is full
 motion. Its antennae vibrate with the ear input.
 
@@ -172,11 +180,18 @@ python scripts/run_charts.py --tag v_noadapt --seed 6 --adapt 0 --save-rates
 python scripts/score.py                    # sessions -> FLY SCORE (median), spread, robustness
 python scripts/make_covers.py              # brain-painted album covers
 python scripts/validate_escape.py          # sanity check
-python scripts/make_figures.py && python scripts/build_site.py && python scripts/make_countdown.py
+python scripts/make_figures.py && python scripts/build_site.py
+python scripts/export_web.py               # compact binaries for the 3D viewer (docs/data/)
+python scripts/export_replay.py            # spikes of the 5 highlighted listens, frame by frame
+python scripts/render_web_video.py         # countdown video, rendered from the three.js page with headless Chrome
 ```
+
+The site is plain static files in `docs/` (three.js from a CDN): `python -m http.server -d docs` and open
+`http://localhost:8000/viewer.html`.
 
 Add your own songs by editing `charts/*.csv`. Everything under `flyboard/` is small and readable:
 `sim.py` (the GPU brain), `ear.py` (sound → ear), `readout.py` (which neurons we look at), `cover.py` (album art).
+The browser side is in `docs/js/`: `brain.js` (point-cloud shader), `fly.js` (the fly), `viewer.js`, `video.js`.
 
 ## 🙏 Credits
 

@@ -57,9 +57,10 @@ body { background:var(--bg); color:var(--ink); font-family:Inter,'Noto Sans JP',
 nav { position:sticky; top:0; z-index:9; display:flex; gap:8px; justify-content:center; padding:14px; background:#07080dcc; backdrop-filter:blur(10px); border-bottom:1px solid #1d2230; }
 nav button { font:800 14px Inter,sans-serif; color:#cfd3e0; background:#141826; border:1px solid #262c3e; padding:9px 16px; border-radius:99px; cursor:pointer; }
 nav button.on { background:#f4f5f8; color:#07080d; }
+nav a.cta { font:800 14px Inter,sans-serif; color:#07080d; background:#c77dff; padding:9px 16px; border-radius:99px; text-decoration:none; margin-left:12px; }
 .wrap { display:flex; flex-direction:column; align-items:center; }
 video { width:1200px; max-width:100%; border-radius:16px; margin:28px 0 8px; border:1px solid #1d2230; }
-</style></head><body><nav><button onclick="show('all')" id="b-all">ALL-TIME</button><button onclick="show('global')" id="b-global">HOT 30</button><button onclick="show('japan')" id="b-japan">JAPAN</button><button onclick="show('korea')" id="b-korea">KOREA</button></nav><div class="wrap">
+</style></head><body><nav><button onclick="show('all')" id="b-all">ALL-TIME</button><button onclick="show('global')" id="b-global">HOT 30</button><button onclick="show('japan')" id="b-japan">JAPAN</button><button onclick="show('korea')" id="b-korea">KOREA</button><a class="cta" href="viewer.html">🪰 3D VIEWER →</a></nav><div class="wrap">
   <section class="page hero" style="--acc:#c77dff">
     <div class="mast"><div class="logo"><span class="fly">🪰</span>FLYBOARD</div></div>
     <div class="sub" style="font-size:22px">The music chart voted by a fruit fly brain.</div>
