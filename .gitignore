@@ -1,5 +1,5 @@
-data/
-audio/
+/data/
+/audio/
 __pycache__/
 *.pyc
 *_log.txt
