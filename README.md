@@ -7,8 +7,10 @@
 84 songs · 165,122 simulated neurons · 90 million synapses · 0 humans consulted</p>
 
 <p align="center">
-  <img src="assets/flyboard_countdown.gif" alt="countdown" width="85%"><br>
-  <sub>🔊 Full video with sound (a real fruit-fly love song): <a href="docs/flyboard_countdown.mp4">flyboard_countdown.mp4</a></sub>
+  <img src="assets/flyboard_countdown.gif" alt="countdown" width="100%"><br>
+  <sub><b>Left</b> the song's brain-painted cover · <b>Middle</b> the fly's whole nervous system in 3D, every dot a neuron,
+  lighting up as it fires · <b>Right</b> the fly's body, moved by its own simulated motor neurons.<br>
+  🔊 Full video with sound (a synthetic fruit-fly love song): <a href="docs/flyboard_countdown.mp4">flyboard_countdown.mp4</a></sub>
 </p>
 
 On September 3, 2026, Google Research and HHMI Janelia published the complete wiring diagram of a male fruit fly's
@@ -88,7 +90,7 @@ As objective as a simulated fly can be. Here are the rules, including the one we
 |---|---|
 | **Scale** | `FLY SCORE = 100 × (sim − sim_noise) / (1 − sim_noise)`, where `sim` is the cosine similarity between the brain-wide response to the song and the response to fly courtship song (log firing rates, ear neurons excluded). **0 = white noise, 100 = the exact brain response to fly love song.** |
 | **Repetition** | Every song was played to the brain in **4 independent listening sessions** (different random input spikes). The chart shows the **median** listen and its spread (median absolute deviation). The reference is the per-neuron median over 4 listens to fly song. |
-| **Why median** | Now and then the model falls into a random self-sustained burst for part of a listen ([`probe_ignition.py`](scripts/probes/probe_ignition.py)). One such burst landed in a reference listen and, with a mean, inflated a few songs to 40+. A median ignores single freak listens. We switched to the median *after* seeing that, and say so here so you can judge; the per-session scores are all in [`results/scores.csv`](results/scores.csv). |
+| **Why median** | Now and then the model falls into a self-sustained state for part of a listen: an abdominal + flight motor circuit in the nerve cord latches on (see [What the fly's body does](#-what-the-flys-body-does)). One such burst landed in a reference listen and, with a mean, inflated a few songs to 40+. A median ignores single freak listens. We switched to the median *after* seeing that, and say so here so you can judge; the per-session scores are all in [`results/scores.csv`](results/scores.csv). |
 | **Controls** | Each session also plays white noise, a 440 Hz tone, a metronome and a *second, independently generated* fly courtship song. Another fly's song scores **99.9** in every session, the metronome **83.3**, the tone **−18.5**. The scale does what it says. |
 | **Robustness** | Rank correlation between independent sessions: Spearman **ρ = 0.87**. Re-running the whole chart with weaker synapses (w_syn 0.10 mV): **ρ = 0.89**, 7 of the top 10 unchanged. Without ear adaptation: **ρ = 0.80**, 5 of 10. Median spread of a song across listens: **±0.34** points. |
 | **Same volume** | Every clip is loudness-normalized in the fly's hearing band, so mastering loudness does not win. |
@@ -107,6 +109,32 @@ As objective as a simulated fly can be. Here are the rules, including the one we
 - **K-POP is a photo finish.** Super Shy, I Know and Butter are within 0.3 points.
 
 <p align="center"><img src="assets/fly_likes_bass.png" alt="score vs low-frequency share" width="80%"></p>
+
+## 🪰 What the fly's body does
+
+The connectome goes all the way down to the motor neurons, and MaleCNS labels which body part each one drives. So the
+simulation also tells us what the fly would *do*. Mean firing of each body part's motor neurons over a 30 s listen
+(4 sessions):
+
+| Body part (motor neurons) | Human songs (avg of 84) | Fly courtship song | White noise |
+|---|---|---|---|
+| Abdomen (214) | **23 Hz** | 0.15 Hz | 24 Hz |
+| Wings (67) | **13 Hz** | 1.9 Hz | 13 Hz |
+| Legs (381) | 0.1 Hz | 0.15 Hz | 0.16 Hz |
+| Proboscis (67) | 0 | 0 | 0 |
+| Halteres (16) | 0.01 Hz | **0.85 Hz** | 0 |
+
+**Human music makes the fly flinch; fly song makes it listen.** A circuit in the nerve cord that drives the abdomen
+and the flight motor has an off and an on state. Human songs switch it on within about 3 seconds in **334 of 336**
+listens (white noise: 4 of 4), and it then stays on at ~25 Hz, because this simplified model has no adaptation to
+switch it off again. Fly courtship song switched it on in **1 of 8** listens, and only late. It barely differs between
+songs, so it is shown in the video but not used for ranking. The same switch is the "random burst" that forced the
+median in the scoring. Nobody gets the fly to walk or to stick its tongue out.
+
+The fly on the right of the video is a **puppet, not a physics simulation**: each part moves in proportion to the
+recorded activity of its own motor neurons (`subclass` fl/ml/hl legs, wm wings, ad abdomen, pm proboscis, nm neck,
+hm halteres, plus the giant fiber → TTMn for jumps), scaled so that the strongest response any song produced is full
+motion. Its antennae vibrate with the ear input.
 
 ## ✅ Sanity check: does the simulated fly still work like a fly?
 
