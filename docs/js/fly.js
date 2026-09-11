@@ -322,13 +322,17 @@ export class Fly {
     this.ringMat.color.set(hex);
   }
 
-  update(dt, ch) {
+  // style: optional hint from command mode ("groom", "backward", "sing", "hop"); amplitudes still come from ch
+  update(dt, ch, style = null) {
     this.t += dt;
     const t = this.t;
     const g = (k) => ch[k] ?? ch.legs ?? 0;
-    const ear = ch.ear || 0, ab = ch.abdomen || 0, love = Math.max(0, ch.love || 0);
+    const ear = ch.ear || 0, ab = ch.abdomen || 0;
+    const love = style === "sing" ? 0.6 : Math.max(0, ch.love || 0);   // a singing male looks pleased
     const wingsOn = Math.max(ch.wingL ?? ch.wings ?? 0, ch.wingR ?? ch.wings ?? 0);
-    const flinch = Math.min(1, Math.max(ab, wingsOn) * 1.6);
+    // wing/abdomen motor activity reads as a flinch, except when a command explains it (singing, grooming, feeding)
+    const calm = style === "sing" || style === "groom" || style === "feed";
+    const flinch = calm ? 0 : Math.min(1, Math.max(ab, wingsOn) * 1.6);
 
     // hop (giant fiber), breathing, squash when flinching
     this.jump += ((ch.jump || 0) - this.jump) * Math.min(1, dt * 6);
@@ -337,7 +341,7 @@ export class Fly {
     this.body.position.y = hop + 0.02 * ear * Math.abs(Math.sin(2 * Math.PI * 2 * t));
     this.body.scale.set(1 + 0.04 * flinch, breathe * (1 - 0.06 * flinch), 1 + 0.04 * flinch);
     const walk = ["Lfl", "Rfl", "Lml", "Rml", "Lhl", "Rhl"].reduce((a, k) => a + g(k), 0) / 6;
-    this.scroll += dt * 1.4 * walk;
+    this.scroll += dt * 1.4 * walk * (style === "backward" ? -1 : 1);
 
     // head: bop to the beat, yaw from the neck motor neurons, shiver when flinching
     this.head.rotation.set(0.1 * ear * Math.sin(2 * Math.PI * 2 * t) + 0.03 * flinch * Math.sin(2 * Math.PI * 18 * t),
@@ -367,7 +371,18 @@ export class Fly {
     this.halteres.forEach((h, i) => { h.rotation.x = 0.6 * (ch.haltere || 0) * Math.sin(2 * Math.PI * 9 * t + i * Math.PI); });
 
     for (const w of this.wings) {
-      const buzz = ch[w.s > 0 ? "wingL" : "wingR"] ?? ch.wings ?? 0;
+      let buzz = ch[w.s > 0 ? "wingL" : "wingR"] ?? ch.wings ?? 0;
+      if (style === "sing") {                     // a singing male extends one wing and vibrates it
+        const on = w.s > 0 ? Math.max(ch.wingL || 0, ch.wingR || 0) : 0;
+        w.copies.forEach((c, k) => {
+          c.visible = k === 0;
+          c.rotation.set(0, 0, 0);
+          c.rotateY(Math.PI + w.s * (0.35 + 1.15 * on));
+          c.rotateZ(0.08 + 0.18 * on * Math.sin(2 * Math.PI * 11 * t));
+          c.userData.mesh.material.opacity = 0.55;
+        });
+        continue;
+      }
       const spread = 0.35 + 1.0 * buzz;
       w.copies.forEach((c, k) => {
         c.visible = buzz > 0.04 || k === 0;
@@ -382,9 +397,13 @@ export class Fly {
     const bodyY = this.body.position.y;
     for (const L of this.legs) {
       const amp = g(L.key);
-      const ph = 2 * Math.PI * 5 * t + L.phase;
+      const ph = 2 * Math.PI * 5 * t * (style === "backward" ? -1 : 1) + L.phase;
       const hip = V(L.ax, 0.2 + bodyY, L.az * L.s);
-      const foot = V(L.ax + L.dx + 0.18 * amp * Math.sin(ph), GROUND + 0.05 + 0.12 * amp * Math.max(0, Math.cos(ph)), 0.7 * L.s);
+      let foot = V(L.ax + L.dx + 0.18 * amp * Math.sin(ph), GROUND + 0.05 + 0.12 * amp * Math.max(0, Math.cos(ph)), 0.7 * L.s);
+      if (style === "groom" && L.seg === "fl") {  // front legs come up and rub the head / antennae
+        const rub = V(1.02 + 0.06 * Math.sin(2 * Math.PI * 4 * t), 0.72 + 0.08 * Math.sin(2 * Math.PI * 4 * t + L.s), 0.2 * L.s);
+        foot = foot.lerp(rub, Math.min(1, 1.6 * amp));
+      }
       const knee = hip.clone().lerp(foot, 0.5).add(V(0, 0.2, 0.08 * L.s));
       aim(L.thigh, hip, knee);
       aim(L.shin, knee, foot);

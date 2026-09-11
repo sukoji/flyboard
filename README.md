@@ -95,6 +95,62 @@ As objective as a simulated fly can be. Here are the rules, including the one we
 | **Robustness** | Rank correlation between independent sessions: Spearman **ρ = 0.87**. Re-running the whole chart with weaker synapses (w_syn 0.10 mV): **ρ = 0.89**, 7 of the top 10 unchanged. Without ear adaptation: **ρ = 0.80**, 5 of 10. Median spread of a song across listens: **±0.34** points. |
 | **Same volume** | Every clip is loudness-normalized in the fly's hearing band, so mastering loudness does not win. |
 
+## 🧪 What does the brain add?
+
+Is this just audio matching with extra steps? We scored every song with the same formula on the **ear input alone**
+(no brain), using a few summaries of the two ear channels:
+
+| Ear-only score | Rank correlation with FLY SCORE | Same top 10 | Same #1 (of 3 charts) |
+|---|---|---|---|
+| Loudness balance of the two ear channels (2 numbers) | **ρ = 0.88** | 8 | 1 |
+| Low-frequency share (1 number) | ρ = 0.87 | 7 | 1 |
+| Rhythm: pulse/beat spectrum, 1-60 Hz | ρ = 0.11 | 0 | 0 |
+
+**Honest reading:** in this model the fly brain mostly hears the *balance between its two ear channels*. Whether a
+song's rhythm resembles fly song barely matters: a metronome's rhythm is nothing like fly song, yet it scores 83. The
+brain does reshuffle the very top: without it, only 1 of the 3 chart #1s would stay #1.
+([scripts/baseline_ear.py](scripts/baseline_ear.py))
+
+## 🎛️ Five axes instead of one
+
+Love is a single reference. We also simulated **another fruit fly flying past** (~220 Hz wingbeat buzz) and **a
+wasp-like predator coming at you** (~130 Hz buzz, crescendos), and added two brain readouts:
+
+| Axis | What it measures |
+|---|---|
+| 💘 love | similarity to the brain's response to fly courtship song (= FLY SCORE) |
+| 🪰 fly buzz | similarity to the response to another fly flying past |
+| 🐝 danger | similarity to the response to a wasp-like buzz |
+| ⚡ startle | giant-fiber (escape neuron) firing |
+| 🧠 arousal | how many neurons light up |
+
+<p align="center"><img src="assets/axes.png" alt="five-axis radars" width="100%"></p>
+
+**This fly can barely tell a lover from a wasp.** Love, danger and startle move together (ρ 0.87-0.89): both sounds sit
+in the same low band, and this model ignores rhythm. Fly buzz and arousal form a second group (ρ 0.83). So the five
+axes really describe two things: low-band balance and how dense the sound is. Every song's radar is in the
+[viewer](https://sukoji.github.io/flyboard/viewer.html). ([scripts/score_axes.py](scripts/score_axes.py))
+
+## 🕹️ Command mode: switch on a neuron, watch the fly
+
+Sound is not the only way in. In the viewer's **COMMANDS** tab you switch on a command neuron type, optogenetics-style
+(Poisson input for 2 s), and replay the exact spikes of the whole CNS while the fly follows its motor neurons:
+
+| Command | Neurons switched on | Strongest motor output |
+|---|---|---|
+| 🦘 [Looming shadow](https://sukoji.github.io/flyboard/viewer.html?cmd=jump) | LPLC2 looming detectors (185) → giant fiber | wings 54 Hz, halteres 44 Hz, jump muscle 16 Hz |
+| 🎵 [Sing](https://sukoji.github.io/flyboard/viewer.html?cmd=sing) | pIP10 (2) | wings 51 / 47 Hz, nothing else |
+| 🧼 [Groom](https://sukoji.github.io/flyboard/viewer.html?cmd=groom) | DNg12 family (42) | neck 52-53 Hz, front legs 25-28 Hz |
+| 🔙 [Moonwalk](https://sukoji.github.io/flyboard/viewer.html?cmd=backward) | MDN (4) | neck 39 Hz, middle/hind legs 6-11 Hz |
+| 🚶 [P9](https://sukoji.github.io/flyboard/viewer.html?cmd=p9) | DNp09 (2) | neck 72 Hz, abdomen 29 Hz, wings 17-18 Hz |
+| 👅 [Proboscis](https://sukoji.github.io/flyboard/viewer.html?cmd=feed) | MN9 (2) | proboscis 7.5 Hz |
+
+Each command lights up the body parts its real counterpart is known for: the song neuron drives only the wings, the
+grooming neurons the front legs and the head. The puppet adds a posture hint per command (one wing out for singing,
+front legs to the head for grooming, stepping backward for MDN); how much each part moves still comes from the
+simulated motor neurons. Steering neurons (DNa01/02) barely moved anything in this model.
+([scripts/export_commands.py](scripts/export_commands.py))
+
 ## 🔬 What we found
 
 - **The fly likes bass.** The score tracks how much of a song's energy reaches the fly's *low-frequency* ear neurons
@@ -170,11 +226,15 @@ for s in 1 2 3 4; do python scripts/run_charts.py --tag s$s --seed $s --save-rat
 python scripts/run_charts.py --tag v_w010 --seed 5 --w-syn 0.1 --save-rates   # robustness variants (optional)
 python scripts/run_charts.py --tag v_noadapt --seed 6 --adapt 0 --save-rates
 python scripts/score.py                    # sessions -> FLY SCORE (median), spread, robustness
+python scripts/run_refs.py                 # extra reference sounds (fly buzz, wasp) for the five axes
+python scripts/score_axes.py               # five axes
+python scripts/baseline_ear.py             # ear-only scores: what the brain adds
 python scripts/make_covers.py              # brain-painted album covers
 python scripts/validate_escape.py          # sanity check
 python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # compact binaries for the 3D viewer (docs/data/)
 python scripts/export_replay.py            # spikes of the 5 highlighted listens, frame by frame
+python scripts/export_commands.py          # command mode: switch on command neurons, record spikes + motor neurons
 python scripts/render_web_video.py         # countdown video, rendered from the three.js page with headless Chrome
 ```
 

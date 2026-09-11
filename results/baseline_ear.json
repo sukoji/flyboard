@@ -1,0 +1,46 @@
+{
+  "level": {
+    "spearman_rho": 0.884,
+    "top10_overlap": 8,
+    "same_chart_number1": 1,
+    "controls": {
+      "ctrl_flysong": 99.9,
+      "ctrl_noise": 0.0,
+      "ctrl_tone": -836.9,
+      "ctrl_metronome": 96.1
+    }
+  },
+  "rhythm": {
+    "spearman_rho": 0.111,
+    "top10_overlap": 0,
+    "same_chart_number1": 0,
+    "controls": {
+      "ctrl_flysong": 97.9,
+      "ctrl_noise": 0.0,
+      "ctrl_tone": -793.0,
+      "ctrl_metronome": -168.1
+    }
+  },
+  "level+rhythm": {
+    "spearman_rho": 0.119,
+    "top10_overlap": 0,
+    "same_chart_number1": 0,
+    "controls": {
+      "ctrl_flysong": 98.0,
+      "ctrl_noise": 0.0,
+      "ctrl_tone": -910.5,
+      "ctrl_metronome": -163.9
+    }
+  },
+  "bass": {
+    "spearman_rho": 0.872,
+    "top10_overlap": 7,
+    "same_chart_number1": 1,
+    "controls": {
+      "ctrl_flysong": 55.4,
+      "ctrl_noise": 14.1,
+      "ctrl_tone": 0.4,
+      "ctrl_metronome": 47.9
+    }
+  }
+}

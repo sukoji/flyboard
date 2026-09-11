@@ -1,0 +1,88 @@
+{
+  "spearman_between_axes": {
+    "love": {
+      "love": 1.0,
+      "flybuzz": 0.53,
+      "danger": 0.89,
+      "startle": 0.87,
+      "arousal": 0.65
+    },
+    "flybuzz": {
+      "love": 0.53,
+      "flybuzz": 1.0,
+      "danger": 0.72,
+      "startle": 0.53,
+      "arousal": 0.83
+    },
+    "danger": {
+      "love": 0.89,
+      "flybuzz": 0.72,
+      "danger": 1.0,
+      "startle": 0.68,
+      "arousal": 0.71
+    },
+    "startle": {
+      "love": 0.87,
+      "flybuzz": 0.53,
+      "danger": 0.68,
+      "startle": 1.0,
+      "arousal": 0.71
+    },
+    "arousal": {
+      "love": 0.65,
+      "flybuzz": 0.83,
+      "danger": 0.71,
+      "startle": 0.71,
+      "arousal": 1.0
+    }
+  },
+  "top3": {
+    "love": [
+      "Bohemian Rhapsody",
+      "プラスティック・ラブ",
+      "Billie Jean"
+    ],
+    "flybuzz": [
+      "Bohemian Rhapsody",
+      "Imagine",
+      "Lies"
+    ],
+    "danger": [
+      "Bohemian Rhapsody",
+      "プラスティック・ラブ",
+      "Rolling in the Deep"
+    ],
+    "startle": [
+      "bad guy",
+      "プラスティック・ラブ",
+      "I Know"
+    ],
+    "arousal": [
+      "Bohemian Rhapsody",
+      "Gangnam Style",
+      "Butter"
+    ]
+  },
+  "controls": {
+    "ctrl_flysong": {
+      "love": 99.9000015258789,
+      "flybuzz": -488.3999938964844,
+      "danger": 83.0
+    },
+    "ctrl_noise": {
+      "love": 0.0,
+      "flybuzz": 0.0,
+      "danger": 0.0
+    },
+    "ctrl_tone": {
+      "love": -18.5,
+      "flybuzz": -46.70000076293945,
+      "danger": -19.600000381469727
+    },
+    "ctrl_metronome": {
+      "love": 83.30000305175781,
+      "flybuzz": -467.3999938964844,
+      "danger": 89.80000305175781
+    }
+  }
+}

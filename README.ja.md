@@ -94,6 +94,61 @@ flowchart LR
 | **頑健性** | 独立セッション間の順位相関：Spearman **ρ = 0.87**。シナプスを弱めた設定（w_syn 0.10 mV）でチャート全体をやり直すと **ρ = 0.89**、トップ10のうち7曲が同じ。耳の順応をなくすと **ρ = 0.80**、10曲中5曲。曲ごとの試聴ばらつきの中央値は **±0.34点** です。 |
 | **同じ音量** | すべてのクリップをハエの可聴帯域で音量をそろえているので、マスタリングの音圧では勝てません。 |
 
+## 🧪 脳は何を足している？
+
+結局、音を比べているだけでは？ 確かめるために、**脳を使わず耳の入力だけで**同じ式のスコアを付けてみました。
+2つの耳チャネルのまとめ方をいくつか変えています。
+
+| 耳の入力だけのスコア | FLY SCOREとの順位相関 | トップ10の一致 | 1位の一致（3チャート中） |
+|---|---|---|---|
+| 2つの耳チャネルの強さのバランス（数値2つ） | **ρ = 0.88** | 8 | 1 |
+| 低音の割合（数値1つ） | ρ = 0.87 | 7 | 1 |
+| リズム：パルス・ビートのスペクトル、1-60 Hz | ρ = 0.11 | 0 | 0 |
+
+**正直な読み方：** このモデルのハエの脳は、主に*2つの耳チャネルのバランス*を聴いています。曲のリズムがハエの歌に
+似ているかどうかはほとんど関係ありません。メトロノームのリズムはハエの歌とまったく違うのに83点です。ただし脳は
+いちばん上の順位を入れ替えます。脳がなければ、3つのチャートの1位のうち1曲しか1位のままになりません。
+（[scripts/baseline_ear.py](scripts/baseline_ear.py)）
+
+## 🎛️ 基準ひとつではなく5つの軸
+
+「恋」は基準の音ひとつだけです。そこで**近くを飛ぶ別のハエの羽音**（約220 Hz）と、**迫ってくるスズメバチのような
+天敵の羽音**（約130 Hz、だんだん大きく）もシミュレーションし、脳の読み出し値を2つ加えました。
+
+| 軸 | 測るもの |
+|---|---|
+| 💘 恋 | ハエの求愛歌に対する脳の反応との類似度（= FLY SCORE） |
+| 🪰 仲間 | 近くを飛ぶ別のハエの音に対する反応との類似度 |
+| 🐝 危険 | スズメバチのような羽音に対する反応との類似度 |
+| ⚡ びっくり | 巨大線維（逃避ニューロン）の発火 |
+| 🧠 興奮度 | 光るニューロンの数 |
+
+<p align="center"><img src="assets/axes.png" alt="5軸のレーダー" width="100%"></p>
+
+**このハエは恋の相手とスズメバチをほとんど区別できません。** 恋、危険、びっくりは一緒に動きます（ρ 0.87-0.89）。
+どちらの音も同じ低音域にあり、このモデルはリズムを無視するからです。仲間と興奮度は2つ目のグループです（ρ 0.83）。
+つまり5つの軸は実質2つのこと、低音のバランスと音の密度を表しています。曲ごとのレーダーは[ビューア](https://sukoji.github.io/flyboard/viewer.html)で見られます。
+（[scripts/score_axes.py](scripts/score_axes.py)）
+
+## 🕹️ コマンドモード：ニューロンをオンにしてハエを見る
+
+入力は音だけではありません。ビューアの **COMMANDS** タブで、コマンドニューロンを光遺伝学のようにオンにすると（2秒間の
+ポアソン入力）、神経系全体の実際のスパイクが再生され、ハエは運動ニューロンに合わせて動きます。
+
+| コマンド | オンにしたニューロン | いちばん強い運動出力 |
+|---|---|---|
+| 🦘 [迫る影](https://sukoji.github.io/flyboard/viewer.html?cmd=jump) | LPLC2 接近検出ニューロン（185）→ 巨大線維 | 翅 54 Hz、平均棍 44 Hz、跳躍筋 16 Hz |
+| 🎵 [歌う](https://sukoji.github.io/flyboard/viewer.html?cmd=sing) | pIP10（2） | 翅 51 / 47 Hz、ほかはなし |
+| 🧼 [毛づくろい](https://sukoji.github.io/flyboard/viewer.html?cmd=groom) | DNg12 系（42） | 首 52-53 Hz、前脚 25-28 Hz |
+| 🔙 [後ろ歩き](https://sukoji.github.io/flyboard/viewer.html?cmd=backward) | MDN（4） | 首 39 Hz、中脚・後脚 6-11 Hz |
+| 🚶 [P9](https://sukoji.github.io/flyboard/viewer.html?cmd=p9) | DNp09（2） | 首 72 Hz、腹部 29 Hz、翅 17-18 Hz |
+| 👅 [口吻](https://sukoji.github.io/flyboard/viewer.html?cmd=feed) | MN9（2） | 口吻 7.5 Hz |
+
+各コマンドは、本物のハエで知られている体の部位を動かします。歌のニューロンは翅だけを、毛づくろいのニューロンは前脚と
+頭を動かします。あやつり人形はコマンドごとに姿勢のヒントを加えます（歌は片方の翅を広げる、毛づくろいは前脚を頭へ、MDNは
+後ろ向きに歩く）。各部位がどれだけ動くかは、あくまでシミュレーションの運動ニューロンから来ています。方向転換のニューロン
+（DNa01/02）は、このモデルではほとんど何も動かしませんでした。（[scripts/export_commands.py](scripts/export_commands.py)）
+
 ## 🔬 わかったこと
 
 - **ハエは低音好き。** スコアは、曲のエネルギーのうちハエの*低音域*の耳ニューロン（JO-B、80-300 Hz）に届く割合と
@@ -166,11 +221,15 @@ for s in 1 2 3 4; do python scripts/run_charts.py --tag s$s --seed $s --save-rat
 python scripts/run_charts.py --tag v_w010 --seed 5 --w-syn 0.1 --save-rates   # 頑健性の変種 (任意)
 python scripts/run_charts.py --tag v_noadapt --seed 6 --adapt 0 --save-rates
 python scripts/score.py                    # セッション -> FLY SCORE (中央値)、ばらつき、頑健性
+python scripts/run_refs.py                 # 5軸用の追加の基準音 (ハエの羽音、スズメバチ)
+python scripts/score_axes.py               # 5つの軸
+python scripts/baseline_ear.py             # 耳の入力だけのスコア：脳が足しているもの
 python scripts/make_covers.py              # 脳が描いたジャケット
 python scripts/validate_escape.py          # 検証
 python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # 3Dビューア用のコンパクトなバイナリ (docs/data/)
 python scripts/export_replay.py            # ハイライト5曲のスパイクをフレームごとに
+python scripts/export_commands.py          # コマンドモード：コマンドニューロンをオンにしてスパイク + 運動ニューロンを記録
 python scripts/render_web_video.py         # three.jsのページをヘッドレスChromeでキャプチャしてカウントダウン動画を作成
 ```
 

@@ -89,6 +89,25 @@ def fly_song(seconds=30.0, ipi=0.035, pulse_hz=250.0, sine_hz=150.0, seed=0):
     return x
 
 
+def buzz(seconds=30.0, f0=220.0, seed=0, approach=False):
+    """Wingbeat buzz: a harmonic tone at the wingbeat frequency with slow loudness swells.
+    f0 ~220 Hz = another Drosophila flying past (wingbeat ~200-230 Hz); f0 ~130 Hz = a wasp-like
+    predator. approach=True makes each swell a crescendo that stops at its loudest (something coming at you)."""
+    rng = np.random.default_rng(seed)
+    n = int(seconds * SR)
+    t = np.arange(n) / SR
+    f = f0 * (1 + 0.02 * np.sin(2 * np.pi * 0.3 * t + rng.uniform(0, 6)))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    x = sum(a * np.sin(k * ph) for k, a in [(1, 1.0), (2, 0.5), (3, 0.25), (4, 0.12)])
+    env, pos = np.zeros(n), 0
+    while pos < n:
+        dur, gap = int(rng.uniform(1.0, 3.0) * SR), int(rng.uniform(0.3, 1.5) * SR)
+        seg = np.arange(min(dur, n - pos)) / max(1, dur)
+        env[pos: pos + len(seg)] = seg ** 2 if approach else np.sin(np.pi * seg) ** 2
+        pos += dur + gap
+    return x * env
+
+
 def pulse_train(ipi, seconds=30.0, pulse_hz=250.0):
     """Pulse-only song with a fixed inter-pulse interval (for the tuning curve)."""
     x = np.zeros(int(seconds * SR))

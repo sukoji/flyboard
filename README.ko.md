@@ -94,6 +94,60 @@ flowchart LR
 | **견고성** | 독립 세션 간 순위 상관: Spearman **ρ = 0.87**. 시냅스를 약하게 한 설정(w_syn 0.10 mV)으로 차트 전체를 다시 돌리면 **ρ = 0.89**, Top 10 중 7곡 유지. 귀 적응 효과를 끄면 **ρ = 0.80**, 10곡 중 5곡 유지. 곡별 청취 편차의 중앙값은 **±0.34점**입니다. |
 | **같은 음량** | 모든 클립을 초파리 가청 대역 기준으로 음량을 맞춰서, 마스터링 음량이 크다고 이기지 않습니다. |
 
+## 🧪 뇌는 무엇을 더할까?
+
+결국 소리 비교를 돌려서 한 것 아닐까요? 확인하려고 **뇌를 빼고 귀 입력만으로** 같은 공식의 점수를 매겨 봤습니다.
+귀 두 채널을 요약하는 방법을 몇 가지로 바꿨습니다.
+
+| 귀 입력만으로 매긴 점수 | FLY SCORE와 순위 상관 | Top 10 겹침 | 1위 일치 (차트 3개 중) |
+|---|---|---|---|
+| 두 귀 채널의 세기 균형 (숫자 2개) | **ρ = 0.88** | 8 | 1 |
+| 저음 비중 (숫자 1개) | ρ = 0.87 | 7 | 1 |
+| 박자: 펄스·비트 스펙트럼, 1-60 Hz | ρ = 0.11 | 0 | 0 |
+
+**정직한 해석:** 이 모델의 초파리 뇌는 대부분 *두 귀 채널의 세기 균형*을 듣습니다. 곡의 박자가 초파리 노래와
+닮았는지는 거의 상관이 없습니다. 메트로놈은 박자가 초파리 노래와 전혀 다른데도 83점입니다. 다만 뇌는 맨 위 순위를
+바꿉니다. 뇌가 없으면 세 차트의 1위 중 1곡만 그대로 1위입니다. ([scripts/baseline_ear.py](scripts/baseline_ear.py))
+
+## 🎛️ 기준 하나 대신 다섯 축
+
+사랑은 기준 소리 하나뿐입니다. 그래서 **날아가는 다른 초파리의 날갯소리**(약 220 Hz)와 **다가오는 말벌 같은 천적의
+날갯소리**(약 130 Hz, 점점 커짐)도 시뮬레이션하고, 뇌 판독값 두 개를 더했습니다.
+
+| 축 | 재는 것 |
+|---|---|
+| 💘 사랑 | 초파리 구애 노래에 대한 뇌 반응과의 유사도 (= FLY SCORE) |
+| 🪰 동족 | 날아가는 다른 초파리 소리에 대한 반응과의 유사도 |
+| 🐝 위험 | 말벌 같은 날갯소리에 대한 반응과의 유사도 |
+| ⚡ 깜짝 | 거대섬유(도망 뉴런) 발화 |
+| 🧠 흥분도 | 켜지는 뉴런 수 |
+
+<p align="center"><img src="assets/axes.png" alt="다섯 축 레이더" width="100%"></p>
+
+**이 초파리는 짝과 말벌을 거의 구분하지 못합니다.** 사랑, 위험, 깜짝은 함께 움직입니다(ρ 0.87-0.89). 두 소리 모두
+같은 저음 대역에 있고, 이 모델은 박자를 무시하기 때문입니다. 동족과 흥분도는 두 번째 묶음입니다(ρ 0.83). 결국 다섯
+축은 두 가지, 저음 균형과 소리의 밀도를 나타냅니다. 곡별 레이더는 [뷰어](https://sukoji.github.io/flyboard/viewer.html)에서 볼 수 있습니다.
+([scripts/score_axes.py](scripts/score_axes.py))
+
+## 🕹️ 명령 모드: 뉴런을 켜고 초파리를 보기
+
+소리만 입력이 아닙니다. 뷰어의 **COMMANDS** 탭에서 명령 뉴런을 광유전학처럼 켜면(2초간 포아송 입력), 신경계 전체의
+실제 스파이크가 재생되고 초파리는 운동뉴런을 따라 움직입니다.
+
+| 명령 | 켠 뉴런 | 가장 강한 운동 출력 |
+|---|---|---|
+| 🦘 [다가오는 그림자](https://sukoji.github.io/flyboard/viewer.html?cmd=jump) | LPLC2 접근 감지 뉴런 (185) → 거대섬유 | 날개 54 Hz, 평형곤 44 Hz, 점프근 16 Hz |
+| 🎵 [노래](https://sukoji.github.io/flyboard/viewer.html?cmd=sing) | pIP10 (2) | 날개 51 / 47 Hz, 다른 곳은 없음 |
+| 🧼 [그루밍](https://sukoji.github.io/flyboard/viewer.html?cmd=groom) | DNg12 계열 (42) | 목 52-53 Hz, 앞다리 25-28 Hz |
+| 🔙 [뒤로 걷기](https://sukoji.github.io/flyboard/viewer.html?cmd=backward) | MDN (4) | 목 39 Hz, 가운뎃다리·뒷다리 6-11 Hz |
+| 🚶 [P9](https://sukoji.github.io/flyboard/viewer.html?cmd=p9) | DNp09 (2) | 목 72 Hz, 복부 29 Hz, 날개 17-18 Hz |
+| 👅 [주둥이](https://sukoji.github.io/flyboard/viewer.html?cmd=feed) | MN9 (2) | 주둥이 7.5 Hz |
+
+각 명령은 실제 초파리에서 알려진 신체 부위를 켭니다. 노래 뉴런은 날개만, 그루밍 뉴런은 앞다리와 머리를 움직입니다.
+꼭두각시는 명령마다 자세 힌트를 더합니다(노래는 한쪽 날개 펴기, 그루밍은 앞다리를 머리로, MDN은 뒤로 걷기). 각 부위가
+얼마나 움직이는지는 여전히 시뮬레이션된 운동뉴런에서 옵니다. 방향 전환 뉴런(DNa01/02)은 이 모델에서 거의 아무것도
+움직이지 못했습니다. ([scripts/export_commands.py](scripts/export_commands.py))
+
 ## 🔬 발견한 것
 
 - **초파리는 저음을 좋아합니다.** 점수는 곡의 에너지 중 초파리의 *저음역* 귀 뉴런(JO-B, 80-300 Hz)에 닿는 비율과
@@ -166,11 +220,15 @@ for s in 1 2 3 4; do python scripts/run_charts.py --tag s$s --seed $s --save-rat
 python scripts/run_charts.py --tag v_w010 --seed 5 --w-syn 0.1 --save-rates   # 견고성 변형 (선택)
 python scripts/run_charts.py --tag v_noadapt --seed 6 --adapt 0 --save-rates
 python scripts/score.py                    # 세션 -> FLY SCORE (중앙값), 편차, 견고성
+python scripts/run_refs.py                 # 다섯 축용 추가 기준 소리 (초파리 날갯소리, 말벌)
+python scripts/score_axes.py               # 다섯 축
+python scripts/baseline_ear.py             # 귀 입력만으로 매긴 점수: 뇌가 더하는 것
 python scripts/make_covers.py              # 뇌가 그린 앨범 커버
 python scripts/validate_escape.py          # 검증
 python scripts/make_figures.py && python scripts/build_site.py
 python scripts/export_web.py               # 3D 뷰어용 압축 바이너리 (docs/data/)
 python scripts/export_replay.py            # 하이라이트 5곡의 스파이크를 프레임 단위로
+python scripts/export_commands.py          # 명령 모드: 명령 뉴런을 켜고 스파이크 + 운동뉴런 기록
 python scripts/render_web_video.py         # three.js 페이지를 헤드리스 Chrome으로 캡처해 카운트다운 영상 생성
 ```
 

@@ -46,5 +46,37 @@ def main():
     print("saved assets/fly_likes_bass.png", f"r={r_:.2f}")
 
 
+def radars():
+    """Five-axis radars (percentile among the 84 songs) for the #1s, the last place and two controls."""
+    ax_df = pd.read_csv(ROOT / "results" / "axes.csv", index_col="id")
+    df = pd.read_csv(ROOT / "results" / "scores.csv", index_col="id")
+    songs = df[df.chart != "control"]
+    picks = [songs[songs.chart == c].fly_score.idxmax() for c in ["global", "japan", "korea"]]
+    picks += [songs.fly_score.idxmin(), "ctrl_flysong", "ctrl_metronome"]
+    names = ["love", "fly buzz", "danger", "startle", "arousal"]
+    keys = ["p_love", "p_flybuzz", "p_danger", "p_startle", "p_arousal"]
+    ang = np.linspace(0, 2 * np.pi, len(keys), endpoint=False).tolist()
+    fig, axs = plt.subplots(1, 6, figsize=(15, 3.2), subplot_kw={"polar": True}, facecolor=BG)
+    for a, sid in zip(axs, picks):
+        chart = df.loc[sid, "chart"]
+        col = CHARTS[chart]["color"] if chart in CHARTS else "#9ecbff"
+        v = ax_df.loc[sid, keys].to_numpy(float).tolist()
+        a.set_facecolor(BG)
+        a.fill(ang + ang[:1], v + v[:1], color=col, alpha=0.35)
+        a.plot(ang + ang[:1], v + v[:1], color=col, lw=1.8)
+        a.set_ylim(0, 100)
+        a.set_xticks(ang)
+        a.set_xticklabels(names, color=MUTED, fontsize=8)
+        a.set_yticklabels([])
+        a.grid(color="#2a3044")
+        a.spines["polar"].set_color("#2a3044")
+        title = "fly song (control)" if sid == "ctrl_flysong" else "metronome (control)" if sid == "ctrl_metronome" else trim(str(df.loc[sid, "title"]), 18)
+        a.set_title(title, color=INK, fontsize=10, pad=14)
+    fig.suptitle("Five axes, as percentiles among the 84 songs", color=INK, fontsize=11, y=1.02)
+    fig.savefig(ROOT / "assets" / "axes.png", dpi=130, facecolor=BG, bbox_inches="tight")
+    print("saved assets/axes.png")
+
+
 if __name__ == "__main__":
     main()
+    radars()

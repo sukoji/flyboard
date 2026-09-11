@@ -9,7 +9,9 @@ const METERS = [["legs", "walk", "381 leg MNs"], ["wings", "wings", "67 wing MNs
   ["jump", "jump", "giant fiber → TTMn"], ["proboscis", "proboscis", "MN9/11/12"], ["haltere", "halteres", "16 haltere MNs"]];
 const $ = (id) => document.getElementById(id);
 
-const [data, replay] = await Promise.all([loadData(), loadReplay()]);
+const [data, replay, cmds] = await Promise.all([loadData(), loadReplay(), loadReplay("data/", "commands")]);
+const CMD_COLOR = "#7ee0a1";
+const AXES = [["love", "💘", "love"], ["flybuzz", "🪰", "fly buzz"], ["danger", "🐝", "danger"], ["startle", "⚡", "startle"], ["arousal", "🧠", "arousal"]];
 const songs = data.meta.songs;
 const replayIdx = Object.fromEntries(replay.meta.segments.map((s, i) => [s.id, i]));
 
@@ -73,13 +75,26 @@ addEventListener("resize", resize);
 
 // --- UI --------------------------------------------------------------------
 let current = null, mode = "avg", rp = null;
-const tabs = ["all", "global", "japan", "korea", "control"];
+const tabs = ["all", "global", "japan", "korea", "control", "commands"];
+let cmd = null;
 let tab = "all";
 function renderTabs() {
-  $("tabs").innerHTML = tabs.map((t) => `<button class="${t === tab ? "on" : ""}" data-t="${t}">${t === "all" ? "ALL-TIME" : CHART_NAME[t]}</button>`).join("");
+  $("tabs").innerHTML = tabs.map((t) => `<button class="${t === tab ? "on" : ""}" data-t="${t}">${t === "all" ? "ALL-TIME" : t === "commands" ? "🧪 COMMANDS" : CHART_NAME[t]}</button>`).join("");
   $("tabs").querySelectorAll("button").forEach((b) => b.onclick = () => { tab = b.dataset.t; renderTabs(); renderList(); });
 }
 function renderList() {
+  if (tab === "commands") {
+    $("list").innerHTML = cmds.meta.segments.map((c, i) => `
+      <div class="song ${cmd && cmd.k === i ? "on" : ""}" data-k="${i}">
+        <div class="rk" style="font-size:24px">${c.emoji}</div><div></div>
+        <div><div class="t">${esc(c.label)}</div><div class="a">${esc(c.what)}</div></div><div></div>
+      </div>`).join("");
+    $("list").querySelectorAll(".song").forEach((el) => el.onclick = () => {
+      startCommand(+el.dataset.k);
+      if (innerWidth <= 1100) scrollTo({ top: 0, behavior: "smooth" });
+    });
+    return;
+  }
   let rows = songs.filter((s) => tab === "all" ? s.chart !== "control" : s.chart === tab);
   rows = rows.sort((a, b) => b.score - a.score);
   $("list").innerHTML = rows.map((s, i) => `
@@ -108,6 +123,7 @@ function select(id, startReplay = false) {
   brain.setSong(d.idx, d.rate, d.fp);
   mode = "avg";
   rp = null;
+  cmd = null;
   const fly_ref = songs.find((s) => s.id === "ctrl_flysong").score;
   $("info").innerHTML = `
     <div class="kicker">${current.chart === "control" ? "CONTROL" : `#${current.rank} IN ${CHART_NAME[current.chart]}`}</div>
@@ -116,11 +132,53 @@ function select(id, startReplay = false) {
     <div class="scale"><i style="width:${Math.max(0, current.score)}%"></i><em style="left:${fly_ref}%">fly song</em></div>
     <div class="stats"><div><b>${current.lit}</b>neurons lit</div><div><b>${current.gf} Hz</b>giant fiber</div><div><b>${current.n}</b>active somata</div></div>
     <div class="eq" id="eq">${"<i></i>".repeat(28)}</div>
-    ${current.listen ? `<a class="listen" href="${current.listen}" target="_blank" rel="noopener">Listen on Apple Music ↗</a>` : ""}`;
+    ${current.listen ? `<a class="listen" href="${current.listen}" target="_blank" rel="noopener">Listen on Apple Music ↗</a>` : ""}
+    ${radar(current)}`;
   $("replay").disabled = !(id in replayIdx);
   $("hud").innerHTML = `<b>${esc(current.title)}</b> · ${current.n.toLocaleString()} neurons active<br>each dot = one neuron at its real position · lit = driven by this song`;
   renderList();
   if (startReplay) startReplayMode();
+}
+
+function radar(s) {
+  // five axes as percentiles among the 84 songs
+  if (!s.axes) return "";
+  const R = 58, cx = 130, cy = 88, n = AXES.length;
+  const pt = (i, r) => [cx + r * Math.sin(2 * Math.PI * i / n), cy - r * Math.cos(2 * Math.PI * i / n)];
+  const ring = (f) => AXES.map((_, i) => pt(i, R * f).join(",")).join(" ");
+  const poly = AXES.map(([k], i) => pt(i, R * Math.max(0.04, s.axes[k][0] / 100)).join(",")).join(" ");
+  const labels = AXES.map(([k, e, name], i) => {
+    const [x, y] = pt(i, R + 17);
+    return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="8.5" fill="#aab3cc">${e} ${name} ${Math.round(s.axes[AXES[i][0]][0])}</text>`;
+  }).join("");
+  return `<div class="radar"><svg viewBox="0 0 260 176" width="100%">
+      ${[0.25, 0.5, 0.75, 1].map((f) => `<polygon points="${ring(f)}" fill="none" stroke="#252b3c"/>`).join("")}
+      ${AXES.map((_, i) => `<line x1="${cx}" y1="${cy}" x2="${pt(i, R)[0]}" y2="${pt(i, R)[1]}" stroke="#252b3c"/>`).join("")}
+      <polygon points="${poly}" fill="var(--acc)" fill-opacity=".35" stroke="var(--acc)" stroke-width="1.5"/>${labels}</svg>
+    <div class="rnote">percentile among the 84 songs. 💘 love, 🐝 danger and ⚡ startle move together (ρ ≈ 0.9):
+      this simulated fly can barely tell a courting male from a wasp.</div></div>`;
+}
+
+function startCommand(k) {
+  const c = cmds.meta.segments[k];
+  cmd = { k, f: 0, acc: 0, toasted: false };
+  mode = "command";
+  rp = null;
+  document.documentElement.style.setProperty("--acc", CMD_COLOR);
+  brain.setColor(CMD_COLOR);
+  fly.setAccent(CMD_COLOR);
+  brain.clearGlow();
+  const peaks = Object.entries(c.peak_hz).sort((a, b) => b[1] - a[1]).slice(0, 6)
+    .map(([ch, hz]) => `<div><b>${hz} Hz</b>${ch}</div>`).join("");
+  $("info").innerHTML = `
+    <div class="kicker">COMMAND · optogenetics-style</div>
+    <div class="title">${c.emoji} ${esc(c.label)}</div><div class="artist">${esc(c.what)}</div>
+    <div class="note" style="margin-top:10px">Switches on ${c.n_neurons} neuron${c.n_neurons > 1 ? "s" : ""} with Poisson input for 2 s
+      (t = ${c.on[0]}–${c.on[1]} s) and replays the exact spikes of the whole CNS. Peak motor neuron firing:</div>
+    <div class="stats" style="flex-wrap:wrap">${peaks}</div>`;
+  $("hud").innerHTML = `<b>${c.emoji} ${esc(c.label)}</b> · command mode<br>real spikes of one simulated run`;
+  $("replay").disabled = true;
+  renderList();
 }
 
 function startReplayMode() {
@@ -130,12 +188,22 @@ function startReplayMode() {
   mode = "replay";
 }
 $("replay").onclick = startReplayMode;
-$("avg").onclick = () => { mode = "avg"; rp = null; brain.uniforms.uMode.value = 0; };
+$("avg").onclick = () => select(current.id);   // back to the average blink of the selected song (also leaves command mode)
 
 // --- loop ------------------------------------------------------------------
 const clock = new THREE.Clock();
 let t = 0;
 function bodyChannels() {
+  if (mode === "command" && cmd) {
+    const c = cmds.meta.segments[cmd.k];
+    const ch = {};
+    for (const [k, v] of Object.entries(c.body)) ch[k] = v[cmd.f];
+    ch.legs = ["Lfl", "Rfl", "Lml", "Rml", "Lhl", "Rhl"].reduce((a, k) => a + (ch[k] || 0), 0) / 6;
+    ch.wings = ((ch.wingL || 0) + (ch.wingR || 0)) / 2;
+    ch.ear = 0;
+    ch.love = 0;
+    return ch;
+  }
   if (mode === "replay" && rp) {
     const seg = replay.meta.segments[rp.seg];
     const ch = {};
@@ -168,11 +236,23 @@ function tick() {
     const tt = seg.t0 + rp.f * replay.meta.frame_ms / 1000;
     $("clock").textContent = `replay · listen t = ${tt.toFixed(1)} s${seg.latch_s ? ` · motor latch at ${seg.latch_s.toFixed(1)} s` : ""}`;
     $("hud").innerHTML = `<b>${esc(current.title)}</b> · real spikes, one simulated listen<br>${replay.frame(rp.seg, rp.f).length} neurons firing in this 40 ms frame`;
+  } else if (mode === "command" && cmd) {
+    const c = cmds.meta.segments[cmd.k], fs = cmds.meta.frame_ms / 1000;
+    cmd.acc += dt;
+    while (cmd.acc >= fs) {
+      cmd.acc -= fs;
+      brain.setSpikes(cmds.frame(cmd.k, cmd.f));
+      cmd.f = (cmd.f + 1) % c.frames.length;
+      if (cmd.f === 0) { brain.clearGlow(); cmd.toasted = false; }
+    }
+    const tt = cmd.f * fs, on = tt >= c.on[0] && tt < c.on[1];
+    if (on && !cmd.toasted) { toast(`🧪 ${c.label}: switching ON ${c.n_neurons} neuron${c.n_neurons > 1 ? "s" : ""}`); cmd.toasted = true; }
+    $("clock").textContent = `command · t = ${tt.toFixed(1)} s · ${on ? "ON" : "off"}`;
   } else {
     $("clock").textContent = "";
   }
   const ch = bodyChannels();
-  fly.update(dt, ch);
+  fly.update(dt, ch, mode === "command" && cmd ? cmds.meta.segments[cmd.k].style : null);
   grid.position.x = -(fly.scroll % (12 / 36));
   for (const [k] of METERS) $("m-" + k).style.width = `${Math.round(100 * (ch[k] ?? 0))}%`;
   $("mood").textContent = mood(ch);
@@ -203,6 +283,11 @@ function tick() {
 
 function mood(ch) {
   // one-line reading of the body channels (and the score) for humans
+  if (mode === "command" && cmd) {
+    const c = cmds.meta.segments[cmd.k];
+    return { hop: "🦘 escape!", backward: "🔙 moonwalking", sing: "🎵 singing (one wing out)", groom: "🧼 grooming its head",
+      walk: "🚶 P9 on", feed: "👅 proboscis out" }[c.style] || c.label;
+  }
   if ((ch.love || 0) > 0.8) return "💘 in love: this is what fly courtship sounds like";
   if ((ch.abdomen || 0) > 0.35 || (ch.wings || 0) > 0.35) return "😖 flinching: abdomen + flight motor switched on";
   if ((ch.jump || 0) > 0.5) return "⚡ jumpy: giant fiber firing";
@@ -220,6 +305,10 @@ function toast(msg) {
 renderTabs();
 const q = new URLSearchParams(location.search);
 select(q.get("song") || [...songs].filter((s) => s.chart !== "control").sort((a, b) => b.score - a.score)[0].id, q.has("replay"));
+if (q.has("cmd")) {
+  const k = cmds.meta.segments.findIndex((c) => c.id === q.get("cmd"));
+  if (k >= 0) { tab = "commands"; renderTabs(); startCommand(k); }
+}
 resize();
 $("loading").remove();
 tick();

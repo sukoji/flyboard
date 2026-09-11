@@ -15,6 +15,9 @@ with sync_playwright() as p:
     pg.on("pageerror", lambda e: logs.append(f"PAGEERROR: {e}"))
     pg.goto(url)
     time.sleep(wait)
+    if len(sys.argv) > 4:   # optional: scroll the right panel down to show the lower cards
+        pg.evaluate(f"document.querySelector('section.right').scrollTop = {sys.argv[4]}")
+        time.sleep(0.5)
     pg.screenshot(path=out)
     for l in logs[:30]:
         print(l)

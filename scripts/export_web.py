@@ -69,6 +69,8 @@ def main():
     from run_charts import SEC, controls
     ctrl_audio = {k: v[2] for k, v in controls().items()}
 
+    axes = pd.read_csv(ROOT / "results" / "axes.csv", index_col="id") if (ROOT / "results" / "axes.csv").exists() else None
+    AX = ["love", "flybuzz", "danger", "startle", "arousal"]
     blob, songs = bytearray(), []
     for i, sid in enumerate(ids):
         act = np.flatnonzero((hz[:, i] > 0.5) & ok)
@@ -92,6 +94,8 @@ def main():
             "ring": np.round(ring, 3).tolist(), "offset": off, "n": int(len(idx)),
             "cover": f"covers/{sid}.png",
             "listen": tracks.loc[sid, "itunes_url"] if sid in tracks.index else None,
+            "axes": None if axes is None else {k: [float(axes.loc[sid, f"p_{k}"]),
+                                                    None if pd.isna(axes.loc[sid, k]) else float(axes.loc[sid, k])] for k in AX},
         })
     (OUT / "rates.bin").write_bytes(bytes(blob))
     meta = {"n_somata": int(len(soma)), "n_neurons": int(len(nr)), "scale": 30000,

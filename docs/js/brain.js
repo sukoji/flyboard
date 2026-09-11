@@ -116,11 +116,12 @@ export async function loadData(base = "data/") {
   return { meta, somata: new Int16Array(somata), region: new Uint8Array(region), song };
 }
 
-export async function loadReplay(base = "data/") {
+export async function loadReplay(base = "data/", name = "replay") {
   const [meta, bin] = await Promise.all([
-    fetch(base + "replay.json").then((r) => r.json()),
-    fetch(base + "replay.bin").then((r) => r.arrayBuffer()),
+    fetch(base + name + ".json").then((r) => r.json()),
+    fetch(base + name + ".bin").then((r) => r.arrayBuffer()),
   ]);
+  if (!meta.segments) meta.segments = meta.commands;
   const frame = (seg, f) => {
     const [off, n] = meta.segments[seg].frames[f];
     return new Uint32Array(bin, off, n);
