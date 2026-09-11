@@ -1,3 +1,5 @@
+<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a></p>
+
 <h1 align="center">🪰 FLYBOARD</h1>
 <p align="center"><b>The music chart voted by a fruit fly brain.</b><br>
 84 songs · 165,122 simulated neurons · 90 million synapses · 0 humans consulted</p>
@@ -128,11 +130,13 @@ listens (white noise: 4 of 4), and it then stays on at ~25 Hz, because this simp
 switch it off again. Fly courtship song switched it on in **1 of 8** listens, and only late. It barely differs between
 songs, so it is shown but not used for ranking. Nobody gets the fly to walk or to stick its tongue out.
 
-The fly is a male *D. melanogaster* in three.js (faceted eyes, ocelli, aristae, bristles, veined wings, halteres,
-segmented legs with the male's sex combs, black abdominal tip) and a **puppet, not a physics simulation**: each part
-moves with the recorded activity of its own motor neurons (MaleCNS `subclass` fl/ml/hl, wm, ad, pm, nm, hm; giant
-fiber → TTMn for jumps), scaled so the strongest response any song produced is full motion. ♪ rise with the sound
-reaching its ears, ♥ with the FLY SCORE. The headphones are pure style: a fly hears with its antennae.
+The fly on screen is a cartoon male *D. melanogaster* (three.js, toon-shaded: red compound eyes, aristae, halteres,
+six legs, striped abdomen with the male's dark tip) and a **puppet, not a physics simulation**: each part moves with
+the recorded activity of its own motor neurons (MaleCNS `subclass` fl/ml/hl, wm, ad, pm, nm, hm; giant fiber → TTMn for
+hops), scaled so the strongest response any song produced is full motion. Its face reads the same channels: it bops to
+the sound, **squints and sweats when the abdominal/flight latch switches on**, and gets **heart eyes for a high FLY
+SCORE**. ♪ rise with the sound reaching its ears, ♥ with the FLY SCORE. The headphones are pure style: a fly hears
+with its antennae.
 
 ## ✅ Sanity check: does the simulated fly still work like a fly?
 
@@ -190,23 +194,3 @@ The browser side is in `docs/js/`: `brain.js` (point-cloud shader), `fly.js` (th
   this repository**; only song titles and derived numbers are published.
 - Parody chart. Not affiliated with, endorsed by, or connected to Billboard. The fly was not consulted about the name.
 - Code: MIT.
-
----
-
-<details><summary><b>🇰🇷 한국어 요약</b></summary>
-
-2026년 9월 공개된 수컷 초파리 중추신경계 전체 커넥톰(뉴런 165,122개)을 GPU 스파이킹 모델로 돌리고, 초파리 귀(존스턴 기관)
-모델에 노래를 들려줬습니다. 뇌 전체의 반응이 **초파리 구애 노래를 들을 때와 얼마나 닮았는지**로 점수를 매겨
-세기의 명곡(HOT 30), J-POP(JAPAN), K-POP(KOREA) 차트를 만들었습니다. 0점 = 백색소음, 100점 = 초파리 사랑 노래와 같은 뇌 반응.
-각 곡을 4번 독립적으로 들려 중앙값과 편차를 냈고, 모델 설정을 바꿔도 순위가 유지되는지 확인했습니다.
-앨범 커버는 그 곡을 들을 때 실제로 발화한 뉴런들로 그렸습니다(저작권 이미지 없음). 음원은 저장소에 포함되지 않습니다.
-
-</details>
-
-<details><summary><b>🇯🇵 日本語まとめ</b></summary>
-
-2026年9月に公開されたオスのショウジョウバエ中枢神経系の全コネクトーム（ニューロン165,122個）をGPUでシミュレーションし、
-ハエの耳（ジョンストン器官）に曲を聴かせました。脳全体の反応が**ハエの求愛歌を聴いたときにどれだけ似ているか**で採点し、
-世紀の名曲・J-POP・K-POPのチャートを作りました。ジャケットは、その曲を聴いたときに実際に発火したニューロンで描いています。
-
-</details>

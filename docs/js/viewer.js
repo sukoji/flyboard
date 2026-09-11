@@ -48,7 +48,7 @@ const fRenderer = new THREE.WebGLRenderer({ canvas: fCanvas, antialias: true });
 fRenderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 fRenderer.shadowMap.enabled = true;
 fRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
-fRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+fRenderer.toneMapping = THREE.NoToneMapping;
 const { scene: fScene, grid } = flyStage(fRenderer);
 fScene.background = new THREE.Color(0x0b0e16);
 fScene.fog = new THREE.Fog(0x0b0e16, 5, 11);
@@ -179,7 +179,7 @@ function tick() {
       bar.style.height = `${Math.round(4 + 34 * Math.min(1, 1.3 * (r[0] + r[1]) * wob))}px`;
     });
   }
-  const a = 0.6 + 0.5 * Math.sin(t * 0.25);
+  const a = 0.42 + 0.3 * Math.sin(t * 0.25);
   fCam.position.set(0.2 + 5.6 * Math.cos(a), 2.1, 5.6 * Math.sin(a));
   fCam.lookAt(0.1, 0.15, 0);
 

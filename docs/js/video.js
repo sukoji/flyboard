@@ -29,7 +29,7 @@ const fR = new THREE.WebGLRenderer({ canvas: $("fly"), antialias: true, preserve
 fR.setSize(560, 520, false);
 fR.shadowMap.enabled = true;
 fR.shadowMap.type = THREE.PCFSoftShadowMap;
-fR.toneMapping = THREE.ACESFilmicToneMapping;
+fR.toneMapping = THREE.NoToneMapping;
 const { scene: fScene, grid } = flyStage(fR);
 fScene.background = new THREE.Color(0x07080d);
 fScene.fog = new THREE.Fog(0x07080d, 5, 11);
@@ -43,7 +43,8 @@ function view(t) {
   const yaw = 0.75 + 0.5 * Math.sin(2 * Math.PI * t / 14);
   bCam.position.set(4.4 * Math.cos(yaw), 1.8, 4.4 * Math.sin(yaw));
   bCam.lookAt(0, -0.08, 0);
-  fCam.position.set(0.1 + 7.0 * Math.cos(yaw), 2.5, 7.0 * Math.sin(yaw));
+  const fy = 0.42 + 0.3 * Math.sin(2 * Math.PI * t / 14);   // keep the face toward the camera
+  fCam.position.set(0.1 + 7.0 * Math.cos(fy), 2.5, 7.0 * Math.sin(fy));
   fCam.lookAt(0.05, 0.05, 0);
 }
 

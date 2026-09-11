@@ -44,7 +44,8 @@ def main():
         pg.evaluate("document.fonts.ready")
         n = pg.evaluate("window.totalFrames")
         ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-c:v", "mjpeg", "-r", str(FPS), "-i", "-",
-                               "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "25", "-preset", "slow", str(silent)], stdin=subprocess.PIPE)
+                               "-vf", "scale=1280:720:flags=lanczos", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "27",
+                               "-preset", "slow", "-tune", "animation", str(silent)], stdin=subprocess.PIPE)
         for i in range(n):
             pg.evaluate("""async (i) => { renderAt(i); const c = document.getElementById('cover');
                            if (c && c.src && !c.complete) await c.decode().catch(() => {}); }""", i)
@@ -70,12 +71,12 @@ def main():
         w.writeframes((fly * 32767).astype(np.int16).tobytes())
     mp4 = DOCS / "flyboard_countdown.mp4"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(silent), "-i", str(wav), "-c:v", "copy", "-c:a", "aac",
-                    "-b:a", "96k", "-shortest", str(mp4)], check=True)
+                    "-b:a", "64k", "-shortest", str(mp4)], check=True)
     silent.unlink()
     wav.unlink()
     gif = ASSETS / "flyboard_countdown.gif"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", "3", "-t", "9", "-i", str(mp4), "-vf",
-                    "fps=12,scale=900:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
+                    "fps=10,scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
                     str(gif)], check=True)
     print("saved", mp4, f"{mp4.stat().st_size / 1e6:.1f} MB", gif, f"{gif.stat().st_size / 1e6:.1f} MB")
 
