@@ -25,6 +25,7 @@
   .tabs button.on { background: var(--ink); color: var(--bg); }
   .list { overflow-y: auto; flex: 1; }
   .song { display: grid; grid-template-columns: 30px 44px 1fr auto; gap: 10px; align-items: center; padding: 7px 12px; cursor: pointer; border-left: 3px solid transparent; }
+  .song > div { min-width: 0; }
   .song:hover { background: #121623; }
   .song.on { background: #151a29; border-left-color: var(--acc); }
   .song .rk { font-family: Anton, Impact, sans-serif; font-size: 18px; text-align: center; color: #cfd3e0; }
